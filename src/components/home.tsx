@@ -4,7 +4,9 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import GroupsIcon from "@mui/icons-material/Groups";
 import NoteAltOutlinedIcon from "@mui/icons-material/NoteAltOutlined";
 import DeleteIcon from "@mui/icons-material/Delete";
+import StarIcon from "@mui/icons-material/Star";
 import "./home.css";
+import { red } from "@mui/material/colors";
 
 interface HomeProps {
   curFilms: film[];
@@ -47,6 +49,16 @@ function Home({ curFilms }: HomeProps) {
               </Button>
             </div>
             <div className="home-film_price">{"$ " + e.price}</div>
+            <div className="home-film_featured"></div>
+            <StarIcon
+              sx={{
+                position: "absolute",
+                display: "inline-block",
+                top: 0,
+                right: 0,
+                color: e.featured ? "yellow" : "#e2e2e2",
+              }}
+            />
           </div>
         </Grid>
       ))}

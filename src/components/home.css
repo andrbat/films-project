@@ -36,3 +36,13 @@
   border-top: 20px solid #7eb34e;
   border-left: 20px solid transparent;
 }
+
+.home-film_featured::before {
+  content: "";
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  border-top: 45px solid rgba(212, 212, 212, 0.6);
+  border-left: 45px solid transparent;
+}
