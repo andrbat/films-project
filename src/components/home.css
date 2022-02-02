@@ -1,0 +1,38 @@
+.home-film {
+  max-width: 350px;
+  margin: auto;
+  position: relative;
+  border: 2px solid #afafaf;
+}
+
+.home-film_img {
+  width: 100%;
+}
+
+.home-film_dur {
+  margin: 10px;
+}
+
+.home-film_buttons {
+  text-align: center;
+}
+
+.home-film_price {
+  position: absolute;
+  top: 10px;
+  left: -20px;
+  padding: 5px 20px;
+  color: white;
+  font-weight: 700;
+  background-color: yellowgreen;
+}
+
+.home-film_price::after {
+  content: "";
+  display: inline-block;
+  position: absolute;
+  left: 0;
+  top: 100%;
+  border-top: 20px solid #7eb34e;
+  border-left: 20px solid transparent;
+}
