@@ -20,9 +20,9 @@ export default function EditFilm({ onNew, initVal }: EditFilmProps) {
   const [film, setFilm] = React.useState<ifilm>(initVal);
   const [verify, setVerify] = React.useState(false);
 
-  // React.useEffect(() => {
-  //   setFilm(() => initVal);
-  // }, []);
+  React.useMemo(() => {
+    setFilm(initVal);
+  }, [initVal]);
 
   function handeChangeS(
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
@@ -46,7 +46,7 @@ export default function EditFilm({ onNew, initVal }: EditFilmProps) {
     });
   }
 
-  React.useMemo(() => {
+  React.useEffect(() => {
     setVerify(
       film.title.trim().length > 0 &&
         film.img.trim().length > 0 &&

@@ -59,8 +59,8 @@ function Films({ curFilms, onDelete, onEdit }: HomeProps) {
                   size="medium"
                   startIcon={<NoteAltOutlinedIcon />}
                   onClick={() => {
-                    setEdit(true);
                     setEditFilm(e);
+                    setEdit(true);
                   }}
                 >
                   Edit

@@ -58,7 +58,17 @@ function App() {
   ) => {
     setFilms((oldF) => {
       const newF = [...oldF];
-      newF.push(film);
+      const idx = newF.findIndex((e) => e.id === film.id);
+      if (idx === -1) {
+        newF.push(film);
+      } else {
+        newF[idx].img = film.img;
+        newF[idx].title = film.title;
+        newF[idx].director = film.director;
+        newF[idx].duration = film.duration;
+        newF[idx].price = film.price;
+        newF[idx].description = film.description;
+      }
       return newF;
     });
   };
