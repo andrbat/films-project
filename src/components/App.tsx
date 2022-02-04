@@ -1,9 +1,16 @@
 import { Box, Tab, Tabs } from "@mui/material";
 import React from "react";
-import { film } from "../types/type";
+import { ifilm } from "../types/type";
 import "./App.css";
-import { testfilms } from "./films";
-import Home from "./home";
+import { testfilms, uid } from "./arrfilms";
+import Films from "./films";
+
+import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
+import SlideshowOutlinedIcon from "@mui/icons-material/SlideshowOutlined";
+import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
+import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
+import LoginOutlinedIcon from "@mui/icons-material/LoginOutlined";
+import EditFilm from "./editFilm";
 
 interface TabPanelProps {
   children: React.ReactNode;
@@ -27,10 +34,16 @@ function TabPanel(props: TabPanelProps) {
 }
 
 function App() {
-  const [value, setValue] = React.useState(0);
-  const [films, setFilms] = React.useState<film[]>([]);
+  const [value, setValue] = React.useState(1);
+  const [films, setFilms] = React.useState<ifilm[]>([]);
 
   React.useEffect(() => setFilms(testfilms), []);
+
+  const handleDelete = (id: string) => {
+    setFilms((oldF) => {
+      return oldF.filter((e) => e.id !== id);
+    });
+  };
 
   const handleChange = (
     event: React.SyntheticEvent<Element, Event>,
@@ -39,23 +52,69 @@ function App() {
     setValue(newValue);
   };
 
+  const handleAddEdit = (
+    e: React.MouseEvent<HTMLButtonElement>,
+    film: ifilm
+  ) => {
+    setFilms((oldF) => {
+      const newF = [...oldF];
+      newF.push(film);
+      return newF;
+    });
+  };
+
   return (
-    <Box sx={{ width: "100%" }}>
+    <Box sx={{ maxWidth: "1400px", width: "100%", margin: "auto" }}>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <Tabs value={value} onChange={handleChange}>
-          <Tab label="Home" />
-          <Tab label="+ Add new film" />
-          <Tab label="... ..." />
+          <Tab icon={<HomeOutlinedIcon />} iconPosition="start" label="Home" />
+          <Tab
+            icon={<SlideshowOutlinedIcon />}
+            iconPosition="start"
+            label="Films"
+          />
+          <Tab
+            icon={<AddCircleOutlineOutlinedIcon />}
+            iconPosition="start"
+            label="Add new film"
+          />
+          <Tab
+            icon={<LockOpenOutlinedIcon />}
+            iconPosition="start"
+            sx={{ marginLeft: "auto" }}
+            label="Singup"
+          />
+          <Tab
+            icon={<LoginOutlinedIcon />}
+            iconPosition="start"
+            label="Login"
+          />
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-        <Home curFilms={films} />
+        Home Item
       </TabPanel>
       <TabPanel value={value} index={1}>
-        Item Two
+        <Films
+          curFilms={films}
+          onDelete={handleDelete}
+          onEdit={handleAddEdit}
+        />
       </TabPanel>
       <TabPanel value={value} index={2}>
-        Item Three
+        <EditFilm
+          onNew={handleAddEdit}
+          initVal={{
+            id: uid(),
+            title: "",
+            director: "",
+            duration: 0,
+            price: -1,
+            img: "",
+            featured: false,
+            description: "",
+          }}
+        />
       </TabPanel>
     </Box>
   );

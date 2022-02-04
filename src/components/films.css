@@ -1,0 +1,10 @@
+.films {
+  max-width: 350px;
+  margin: auto;
+  position: relative;
+  border: 2px solid #afafaf;
+}
+
+.films_buttons {
+  text-align: center;
+}

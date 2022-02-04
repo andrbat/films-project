@@ -1,5 +1,5 @@
-export interface film {
-  id: number;
+export interface ifilm {
+  id: string;
   title: string;
   director: string;
   duration: number;

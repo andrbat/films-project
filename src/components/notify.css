@@ -1,0 +1,15 @@
+.notify {
+  display: inline-block;
+  position: fixed;
+  padding: 1rem 2rem;
+  bottom: 0;
+  right: 0;
+  background: #e2e2e2;
+  border: 2px solid navy;
+  transform: translateY(100%);
+  transition: all 1s;
+}
+
+.notify-apear {
+  transform: translateY(0);
+}

@@ -1,23 +1,13 @@
-.home-film {
-  max-width: 350px;
-  margin: auto;
-  position: relative;
-  border: 2px solid #afafaf;
-}
-
-.home-film_img {
+.film_img {
   width: 100%;
+  cursor: pointer;
 }
 
-.home-film_dur {
+.film_dur {
   margin: 10px;
 }
 
-.home-film_buttons {
-  text-align: center;
-}
-
-.home-film_price {
+.film_price {
   position: absolute;
   top: 10px;
   left: -20px;
@@ -27,7 +17,7 @@
   background-color: yellowgreen;
 }
 
-.home-film_price::after {
+.film_price::after {
   content: "";
   display: inline-block;
   position: absolute;
@@ -37,7 +27,7 @@
   border-left: 20px solid transparent;
 }
 
-.home-film_featured::before {
+.film_featured::before {
   content: "";
   display: inline-block;
   position: absolute;
