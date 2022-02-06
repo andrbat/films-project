@@ -2,7 +2,7 @@ import { Box, Tab, Tabs } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { ifilm } from "../types/type";
 import "./App.css";
-import { fetchData, testfilms, uid } from "./data/data";
+import { fetchData, uid } from "./data/data";
 import Films from "./films";
 
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
@@ -38,14 +38,10 @@ function App() {
   const [films, setFilms] = useState<ifilm[]>([]);
 
   useEffect(() => {
-    const newS: ifilm[] = [];
-    fetchData().then((val) => newS.push(val));
-    setFilms(newS);
+    fetchData().then((val) => {
+      setFilms(val);
+    });
   }, []);
-
-  // fetchData()
-  //   .then((val) => console.log(val))
-  //   .catch((e) => console.log(e));
 
   const handleDelete = (id: string) => {
     setFilms((oldF) => {
