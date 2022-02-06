@@ -1,8 +1,8 @@
 import { Box, Tab, Tabs } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { ifilm } from "../types/type";
 import "./App.css";
-import { testfilms, uid } from "./arrfilms";
+import { fetchData, testfilms, uid } from "./data/data";
 import Films from "./films";
 
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
@@ -34,10 +34,18 @@ function TabPanel(props: TabPanelProps) {
 }
 
 function App() {
-  const [value, setValue] = React.useState(1);
-  const [films, setFilms] = React.useState<ifilm[]>([]);
+  const [value, setValue] = useState(1);
+  const [films, setFilms] = useState<ifilm[]>([]);
 
-  React.useEffect(() => setFilms(testfilms), []);
+  useEffect(() => {
+    const newS: ifilm[] = [];
+    fetchData().then((val) => newS.push(val));
+    setFilms(newS);
+  }, []);
+
+  // fetchData()
+  //   .then((val) => console.log(val))
+  //   .catch((e) => console.log(e));
 
   const handleDelete = (id: string) => {
     setFilms((oldF) => {

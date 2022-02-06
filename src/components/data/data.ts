@@ -1,7 +1,19 @@
-import { ifilm } from "../types/type";
+import { resolve } from "path/win32";
+import { ifilm } from "../../types/type";
 
 export function uid() {
   return Date.now().toString(36) + Math.random().toString(36).substr(2);
+}
+
+export function fetchData() {
+  return new Promise((resolve) =>
+    setTimeout(() => {
+      const f = localStorage.getItem("films");
+      f === null ? resolve([]) : resolve(JSON.parse(f));
+    }, 2000)
+  );
+  // const f = localStorage.getItem("films");
+  // f === null ? resolve([]) : resolve(JSON.parse(f));
 }
 
 export const testfilms: ifilm[] = [
