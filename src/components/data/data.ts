@@ -1,4 +1,3 @@
-import { resolve } from "path/win32";
 import { ifilm } from "../../types/type";
 
 export function uid() {
@@ -6,14 +5,12 @@ export function uid() {
 }
 
 export function fetchData() {
-  return new Promise((resolve) =>
+  return new Promise<ifilm[]>((resolve) =>
     setTimeout(() => {
-      const f = localStorage.getItem("films");
+      const f: any = localStorage.getItem("films");
       f === null ? resolve([]) : resolve(JSON.parse(f));
     }, 2000)
   );
-  // const f = localStorage.getItem("films");
-  // f === null ? resolve([]) : resolve(JSON.parse(f));
 }
 
 export const testfilms: ifilm[] = [
