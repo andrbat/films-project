@@ -1,3 +1,11 @@
+import {
+  Link,
+  Outlet,
+  Route,
+  Router,
+  Routes,
+  useParams,
+} from "react-router-dom";
 import { Box, Tab, Tabs } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { ifilm } from "../types/type";
@@ -11,6 +19,24 @@ import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOu
 import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
 import LoginOutlinedIcon from "@mui/icons-material/LoginOutlined";
 import EditFilm from "./editFilm";
+
+function Invoices() {
+  return (
+    <div>
+      <h1>Invoices</h1>
+      <Outlet />
+    </div>
+  );
+}
+
+function Invoice() {
+  let { invoiceId } = useParams();
+  return <h1>Invoice {invoiceId}</h1>;
+}
+
+function SentInvoices() {
+  return <h1>Sent Invoices</h1>;
+}
 
 interface TabPanelProps {
   children: React.ReactNode;
@@ -38,9 +64,11 @@ function App() {
   const [films, setFilms] = useState<ifilm[]>([]);
 
   useEffect(() => {
-    fetchData().then((val) => {
-      setFilms(val);
-    });
+    fetchData()
+      .then((val) => {
+        setFilms(val);
+      })
+      .catch((e) => console.log(e));
   }, []);
 
   const handleDelete = (id: string) => {
@@ -79,6 +107,24 @@ function App() {
 
   return (
     <Box sx={{ maxWidth: "1400px", width: "100%", margin: "auto" }}>
+      <Routes>
+        <Route path="invoices" element={<Invoices />}>
+          <Route path=":invoiceId" element={<Invoice />} />
+          <Route path="sent" element={<SentInvoices />} />
+        </Route>
+      </Routes>
+      <div>
+        <h1>Bookkeeper</h1>
+        <nav
+          style={{
+            borderBottom: "solid 1px",
+            paddingBottom: "1rem",
+          }}
+        >
+          <Link to="/invoices">Invoices</Link> |{" "}
+          <Link to="/expenses">Expenses</Link>
+        </nav>
+      </div>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <Tabs value={value} onChange={handleChange}>
           <Tab icon={<HomeOutlinedIcon />} iconPosition="start" label="Home" />
@@ -105,7 +151,7 @@ function App() {
           />
         </Tabs>
       </Box>
-      <TabPanel value={value} index={0}>
+      {/* <TabPanel value={value} index={0}>
         Home Item
       </TabPanel>
       <TabPanel value={value} index={1}>
@@ -129,7 +175,7 @@ function App() {
             description: "",
           }}
         />
-      </TabPanel>
+      </TabPanel> */}
     </Box>
   );
 }

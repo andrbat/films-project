@@ -4,19 +4,17 @@ import "./index.css";
 import App from "./components/App";
 import reportWebVitals from "./reportWebVitals";
 import { testfilms } from "./components/data/data";
+import { BrowserRouter, Route } from "react-router-dom";
 
 if (localStorage.getItem("films") === null) {
   localStorage.setItem("films", JSON.stringify(testfilms));
 }
 
 ReactDOM.render(
-  <React.StrictMode>
+  <BrowserRouter>
     <App />
-  </React.StrictMode>,
+  </BrowserRouter>,
   document.getElementById("root")
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
