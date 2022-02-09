@@ -1,15 +1,16 @@
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
-import AttachFileOutlinedIcon from "@mui/icons-material/AttachFileOutlined";
 import { Button, InputAdornment } from "@mui/material";
 import TocOutlinedIcon from "@mui/icons-material/TocOutlined";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import GroupsIcon from "@mui/icons-material/Groups";
 import React from "react";
 import { ifilm } from "../types/type";
-import BookmarkAddedOutlinedIcon from "@mui/icons-material/BookmarkAddedOutlined";
-import DoNotDisturbAltOutlinedIcon from "@mui/icons-material/DoNotDisturbAltOutlined";
 import { addNotify } from "./notyfy";
+
+import DoNotDisturbAltOutlinedIcon from "@mui/icons-material/DoNotDisturbAltOutlined";
+import BookmarkAddedOutlinedIcon from "@mui/icons-material/BookmarkAddedOutlined";
+import AttachFileOutlinedIcon from "@mui/icons-material/AttachFileOutlined";
 
 interface EditFilmProps {
   onNew: (e: React.MouseEvent<HTMLButtonElement>, film: ifilm) => void;
@@ -57,7 +58,7 @@ export default function EditFilm({ onNew, initVal }: EditFilmProps) {
   }, [film]);
 
   return (
-    <Box component="form" noValidate autoComplete="off">
+    <Box component="form" noValidate autoComplete="off" sx={{ maxWidth: 700 }}>
       <div>
         <TextField
           fullWidth

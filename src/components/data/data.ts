@@ -13,6 +13,17 @@ export function fetchData() {
   );
 }
 
+export const emptyF: ifilm = {
+  id: uid(),
+  title: "",
+  director: "",
+  duration: 0,
+  price: -1,
+  img: "",
+  featured: false,
+  description: "",
+};
+
 export const testfilms: ifilm[] = [
   {
     id: uid(),

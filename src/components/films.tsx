@@ -6,13 +6,14 @@ import "./films.css";
 import Film from "./film";
 import React from "react";
 import EditFilm from "./editFilm";
+import { emptyF } from "./data/data";
 
-const style = {
+export const style = {
   position: "absolute",
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  maxWidth: 500,
+  maxWidth: 600,
   bgcolor: "background.paper",
   border: "2px solid #000",
   boxShadow: 24,
@@ -28,16 +29,7 @@ interface HomeProps {
 function Films({ curFilms, onDelete, onEdit }: HomeProps) {
   const [open, setOpen] = React.useState(false);
   const [edit, setEdit] = React.useState(false);
-  const [editFilm, setEditFilm] = React.useState<ifilm>({
-    id: "",
-    title: "",
-    director: "",
-    duration: 0,
-    price: -1,
-    img: "",
-    featured: false,
-    description: "",
-  });
+  const [editFilm, setEditFilm] = React.useState<ifilm>(emptyF);
   const [description, setDescription] = React.useState("");
   function handleOpen(d: string) {
     setOpen(true);
@@ -79,13 +71,13 @@ function Films({ curFilms, onDelete, onEdit }: HomeProps) {
           </Grid>
         ))}
       </Grid>
-      <Modal keepMounted open={open} onClose={handleClose}>
-        <Box sx={style}>{description}</Box>
-      </Modal>
       <Modal keepMounted open={edit} onClose={handleCloseEdit}>
         <Box sx={style}>
           <EditFilm onNew={onEdit} initVal={editFilm} />
         </Box>
+      </Modal>
+      <Modal keepMounted open={open} onClose={handleClose}>
+        <Box sx={style}>{description}</Box>
       </Modal>
     </>
   );

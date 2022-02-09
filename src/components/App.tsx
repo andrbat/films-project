@@ -1,67 +1,20 @@
-import {
-  Link,
-  Outlet,
-  Route,
-  Router,
-  Routes,
-  useParams,
-} from "react-router-dom";
-import { Box, Tab, Tabs } from "@mui/material";
+import { Route, Routes, useLocation } from "react-router-dom";
+import { Box } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { ifilm } from "../types/type";
 import "./App.css";
-import { fetchData, uid } from "./data/data";
+import { emptyF, fetchData } from "./data/data";
 import Films from "./films";
 
-import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
-import SlideshowOutlinedIcon from "@mui/icons-material/SlideshowOutlined";
-import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
-import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
-import LoginOutlinedIcon from "@mui/icons-material/LoginOutlined";
 import EditFilm from "./editFilm";
-
-function Invoices() {
-  return (
-    <div>
-      <h1>Invoices</h1>
-      <Outlet />
-    </div>
-  );
-}
-
-function Invoice() {
-  let { invoiceId } = useParams();
-  return <h1>Invoice {invoiceId}</h1>;
-}
-
-function SentInvoices() {
-  return <h1>Sent Invoices</h1>;
-}
-
-interface TabPanelProps {
-  children: React.ReactNode;
-  index: number;
-  value: number;
-}
-
-function TabPanel(props: TabPanelProps) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`tabpanel-${index}`}
-      {...other}
-    >
-      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
-    </div>
-  );
-}
+import { idTabs, NavigateTebs } from "./navigateTebs";
+import { Home } from "./home";
+import { SignUp } from "./signup";
 
 function App() {
-  const [value, setValue] = useState(1);
   const [films, setFilms] = useState<ifilm[]>([]);
+
+  const location = useLocation();
 
   useEffect(() => {
     fetchData()
@@ -75,13 +28,6 @@ function App() {
     setFilms((oldF) => {
       return oldF.filter((e) => e.id !== id);
     });
-  };
-
-  const handleChange = (
-    event: React.SyntheticEvent<Element, Event>,
-    newValue: any
-  ) => {
-    setValue(newValue);
   };
 
   const handleAddEdit = (
@@ -107,75 +53,33 @@ function App() {
 
   return (
     <Box sx={{ maxWidth: "1400px", width: "100%", margin: "auto" }}>
+      <NavigateTebs idTab={idTabs(location.pathname)} />
       <Routes>
-        <Route path="invoices" element={<Invoices />}>
-          <Route path=":invoiceId" element={<Invoice />} />
-          <Route path="sent" element={<SentInvoices />} />
-        </Route>
+        <Route path="/" element={<Home />} />
+        <Route
+          path="films"
+          element={
+            <Films
+              curFilms={films}
+              onDelete={handleDelete}
+              onEdit={handleAddEdit}
+            />
+          }
+        />
+        <Route
+          path="addfilm"
+          element={<EditFilm onNew={handleAddEdit} initVal={emptyF} />}
+        />
+        <Route path="signup" element={<SignUp />} />
+        <Route
+          path="*"
+          element={
+            <main style={{ padding: "1rem" }}>
+              <p>There's nothing here!</p>
+            </main>
+          }
+        />
       </Routes>
-      <div>
-        <h1>Bookkeeper</h1>
-        <nav
-          style={{
-            borderBottom: "solid 1px",
-            paddingBottom: "1rem",
-          }}
-        >
-          <Link to="/invoices">Invoices</Link> |{" "}
-          <Link to="/expenses">Expenses</Link>
-        </nav>
-      </div>
-      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-        <Tabs value={value} onChange={handleChange}>
-          <Tab icon={<HomeOutlinedIcon />} iconPosition="start" label="Home" />
-          <Tab
-            icon={<SlideshowOutlinedIcon />}
-            iconPosition="start"
-            label="Films"
-          />
-          <Tab
-            icon={<AddCircleOutlineOutlinedIcon />}
-            iconPosition="start"
-            label="Add new film"
-          />
-          <Tab
-            icon={<LockOpenOutlinedIcon />}
-            iconPosition="start"
-            sx={{ marginLeft: "auto" }}
-            label="Singup"
-          />
-          <Tab
-            icon={<LoginOutlinedIcon />}
-            iconPosition="start"
-            label="Login"
-          />
-        </Tabs>
-      </Box>
-      {/* <TabPanel value={value} index={0}>
-        Home Item
-      </TabPanel>
-      <TabPanel value={value} index={1}>
-        <Films
-          curFilms={films}
-          onDelete={handleDelete}
-          onEdit={handleAddEdit}
-        />
-      </TabPanel>
-      <TabPanel value={value} index={2}>
-        <EditFilm
-          onNew={handleAddEdit}
-          initVal={{
-            id: uid(),
-            title: "",
-            director: "",
-            duration: 0,
-            price: -1,
-            img: "",
-            featured: false,
-            description: "",
-          }}
-        />
-      </TabPanel> */}
     </Box>
   );
 }
