@@ -23,7 +23,7 @@ export const style = {
 interface HomeProps {
   curFilms: ifilm[];
   onDelete: (id: string) => void;
-  onEdit: (e: React.MouseEvent<HTMLButtonElement>, film: ifilm) => void;
+  onEdit: (film: ifilm) => void;
 }
 
 function Films({ curFilms, onDelete, onEdit }: HomeProps) {
@@ -42,7 +42,7 @@ function Films({ curFilms, onDelete, onEdit }: HomeProps) {
     <>
       <Grid container spacing={2}>
         {curFilms.map((e) => (
-          <Grid item xs={12} md={6} xl={4} key={e.id}>
+          <Grid item xs={12} md={4} xl={3} key={e.id}>
             <div className="films">
               <Film curFilm={e} handlerClick={handleOpen} />
               <div className="films_buttons">

@@ -1,12 +1,12 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Box, Tab, Tabs } from "@mui/material";
 
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import SlideshowOutlinedIcon from "@mui/icons-material/SlideshowOutlined";
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
-import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
 import LoginOutlinedIcon from "@mui/icons-material/LoginOutlined";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "./App";
 
 export function idTabs(to: string) {
   let tab = 0;
@@ -23,12 +23,10 @@ export function idTabs(to: string) {
     case "/signup":
       tab = 3;
       break;
-    case "/login":
-      tab = 4;
-      break;
   }
   return tab;
 }
+
 interface NavTebsProp {
   idTab: number;
 }
@@ -36,6 +34,7 @@ interface NavTebsProp {
 export function NavigateTebs({ idTab }: NavTebsProp) {
   const [value, setValue] = useState(idTab);
   const navigate = useNavigate();
+  const user = useContext(UserContext);
 
   const handleChange = (
     event: React.SyntheticEvent<Element, Event>,
@@ -59,9 +58,6 @@ export function NavigateTebs({ idTab }: NavTebsProp) {
       case 3:
         navigate("/signup");
         break;
-      case 4:
-        navigate("/login");
-        break;
     }
   }
 
@@ -81,15 +77,10 @@ export function NavigateTebs({ idTab }: NavTebsProp) {
             label="Add new film"
           />
           <Tab
-            icon={<LockOpenOutlinedIcon />}
-            iconPosition="start"
-            sx={{ marginLeft: "auto" }}
-            label="Signup"
-          />
-          <Tab
             icon={<LoginOutlinedIcon />}
             iconPosition="start"
-            label="Login"
+            sx={{ marginLeft: "auto" }}
+            label={user.length === 0 ? "Login" : "Singout"}
           />
         </Tabs>
       </Box>

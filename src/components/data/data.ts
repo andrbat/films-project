@@ -1,16 +1,83 @@
-import { ifilm } from "../../types/type";
+import { ifechuser, ifilm } from "../../types/type";
 
 export function uid() {
   return Date.now().toString(36) + Math.random().toString(36).substr(2);
 }
 
-export function fetchData() {
-  return new Promise<ifilm[]>((resolve) =>
-    setTimeout(() => {
-      const f: any = localStorage.getItem("films");
-      f === null ? resolve([]) : resolve(JSON.parse(f));
-    }, 2000)
-  );
+const restApiUrl = "http://192.168.0.80/restapi/";
+// const restApiUrl = "http://andrbat.pp.ua/restapi/";
+
+export async function fetchData() {
+  const response = await fetch(`${restApiUrl}films`, {
+    method: "GET", // *GET, POST, PUT, DELETE, etc.
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  return await response.json();
+}
+
+export async function pushData(data: ifilm) {
+  const response = await fetch(`${restApiUrl}films`, {
+    method: "POST", // *GET, POST, PUT, DELETE, etc.
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+  return await response.json();
+}
+
+export async function editData(data: ifilm) {
+  const response = await fetch(`${restApiUrl}films/${data.id}`, {
+    method: "PUT", // *GET, POST, PUT, DELETE, etc.
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+  return await response.json();
+}
+
+export async function deleteData(id: string) {
+  const response = await fetch(`${restApiUrl}films/${id}`, {
+    method: "DELETE", // *GET, POST, PUT, DELETE, etc.
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  return await response.json();
+}
+
+export async function fetchUsers() {
+  const response = await fetch(`${restApiUrl}users`, {
+    method: "GET", // *GET, POST, PUT, DELETE, etc.
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  return await response.json();
+}
+
+export async function fetchUser(email: string) {
+  const response = await fetch(`${restApiUrl}users?email=${email}`, {
+    method: "GET", // *GET, POST, PUT, DELETE, etc.
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  return await response.json();
+}
+
+export async function pushUser(data: ifechuser) {
+  const response = await fetch(`${restApiUrl}users`, {
+    method: "POST", // *GET, POST, PUT, DELETE, etc.
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+  return await response.json();
 }
 
 export const emptyF: ifilm = {
@@ -23,6 +90,16 @@ export const emptyF: ifilm = {
   featured: false,
   description: "",
 };
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 export const testfilms: ifilm[] = [
   {

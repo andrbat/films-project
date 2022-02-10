@@ -6,14 +6,13 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import GroupsIcon from "@mui/icons-material/Groups";
 import React from "react";
 import { ifilm } from "../types/type";
-import { addNotify } from "./notyfy";
 
 import DoNotDisturbAltOutlinedIcon from "@mui/icons-material/DoNotDisturbAltOutlined";
 import BookmarkAddedOutlinedIcon from "@mui/icons-material/BookmarkAddedOutlined";
 import AttachFileOutlinedIcon from "@mui/icons-material/AttachFileOutlined";
 
 interface EditFilmProps {
-  onNew: (e: React.MouseEvent<HTMLButtonElement>, film: ifilm) => void;
+  onNew: (film: ifilm) => void;
   initVal: ifilm;
 }
 
@@ -162,8 +161,7 @@ export default function EditFilm({ onNew, initVal }: EditFilmProps) {
           startIcon={<BookmarkAddedOutlinedIcon />}
           disabled={!verify}
           onClick={(e) => {
-            onNew(e, film);
-            addNotify("Complited !!!");
+            onNew(film);
             setFilm(initVal);
           }}
         >

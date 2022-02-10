@@ -1,8 +1,8 @@
 import "./notify.css";
 
-export function addNotify(msg: string) {
+export function addNotify(msg: string, isErr: boolean) {
   const div = document.createElement("div");
-  div.classList.add("notify");
+  div.classList.add("notify", isErr ? "notify-error" : "notify-simple");
   div.innerHTML = msg;
   document.body.appendChild(div);
   requestAnimationFrame(() => div.classList.add("notify-apear"));

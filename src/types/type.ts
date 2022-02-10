@@ -8,3 +8,17 @@ export interface ifilm {
   featured: boolean;
   description: string;
 }
+
+export interface ifechuser {
+  id: string;
+  name: string;
+  email: string;
+  password: string;
+}
+
+export interface iuser {
+  name: string;
+  password: string;
+  email: string;
+  agree: boolean;
+}

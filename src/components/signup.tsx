@@ -16,20 +16,23 @@ import PersonAddAltOutlinedIcon from "@mui/icons-material/PersonAddAltOutlined";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useEffect, useState } from "react";
-
-interface iuser {
-  name: string;
-  password: string;
-  email: string;
-  agree: boolean;
-}
+import { iuser } from "../types/type";
+import { fetchUser } from "./data/data";
+import { addNotify } from "./notyfy";
 
 const emptyU = { name: "", password: "", email: "", agree: false };
 
-export function SignUp() {
+interface SignUpProps {
+  onSave: (curUser: iuser) => void;
+  onLogin: (userId: string) => void;
+}
+
+export function SignUp({ onSave, onLogin }: SignUpProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [curUser, setCurUser] = useState<iuser>(emptyU);
   const [verify, setVerify] = useState(false);
+  const [login, setLogin] = useState("");
+  const [password, setPassword] = useState("");
 
   useEffect(() => {
     setVerify(
@@ -59,8 +62,84 @@ export function SignUp() {
     });
   };
 
+  const handlerSave = () => {
+    fetchUser(curUser.email)
+      .then((val) => {
+        if (val.length === 0) {
+          onSave(curUser);
+        } else {
+          addNotify("User is exist!!!", true);
+        }
+      })
+      .catch((e) => console.log("Request failed", e));
+  };
+
+  const handlerLogin = () => {
+    fetchUser(login)
+      .then((val) => {
+        if (val.length === 0 || val[0].password !== password) {
+          addNotify("User or password is wrong!!!", true);
+        } else {
+          onLogin(val[0].id);
+        }
+      })
+      .catch((e) => console.log("Request failed", e));
+  };
+
   return (
     <Box component="form" noValidate autoComplete="off" sx={{ maxWidth: 400 }}>
+      <div>
+        <TextField
+          fullWidth
+          label="Email address"
+          sx={{ marginBottom: 1 }}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <AttachFileOutlinedIcon />
+              </InputAdornment>
+            ),
+          }}
+          name="email"
+          value={login}
+          onChange={(e) => setLogin(e.target.value)}
+          error={login.trim().length === 0}
+        />
+        <TextField
+          fullWidth
+          label="Password"
+          type={showPassword ? "text" : "password"}
+          sx={{ marginBottom: 1 }}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  onClick={() => setShowPassword(!showPassword)}
+                  edge="end"
+                >
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+          name="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          error={password.trim().length === 0}
+        />
+      </div>
+      <div>
+        <Button
+          sx={{ marginBottom: 5 }}
+          variant="outlined"
+          size="medium"
+          startIcon={<BookmarkAddedOutlinedIcon />}
+          disabled={login.length === 0 || password.length === 0}
+          onClick={() => handlerLogin()}
+        >
+          Login
+        </Button>
+      </div>
       <div>
         <TextField
           fullWidth
@@ -77,6 +156,22 @@ export function SignUp() {
           value={curUser.name}
           onChange={handleChange}
           error={curUser.name.trim().length === 0}
+        />
+        <TextField
+          fullWidth
+          label="Email address"
+          sx={{ marginBottom: 1 }}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <AttachFileOutlinedIcon />
+              </InputAdornment>
+            ),
+          }}
+          name="email"
+          value={curUser.email}
+          onChange={handleChange}
+          error={curUser.email.trim().length === 0}
         />
         <TextField
           fullWidth
@@ -100,22 +195,6 @@ export function SignUp() {
           onChange={handleChange}
           error={curUser.password.trim().length === 0}
         />
-        <TextField
-          fullWidth
-          label="Email address"
-          sx={{ marginBottom: 1 }}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <AttachFileOutlinedIcon />
-              </InputAdornment>
-            ),
-          }}
-          name="email"
-          value={curUser.email}
-          onChange={handleChange}
-          error={curUser.email.trim().length === 0}
-        />
       </div>
       <FormControlLabel
         control={
@@ -133,8 +212,9 @@ export function SignUp() {
           size="medium"
           startIcon={<BookmarkAddedOutlinedIcon />}
           disabled={!verify}
+          onClick={() => handlerSave()}
         >
-          Save
+          Registration
         </Button>
         <Button
           variant="outlined"
