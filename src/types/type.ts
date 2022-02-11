@@ -14,6 +14,7 @@ export interface ifechuser {
   name: string;
   email: string;
   password: string;
+  isadmin: boolean;
 }
 
 export interface iuser {
@@ -21,4 +22,10 @@ export interface iuser {
   password: string;
   email: string;
   agree: boolean;
+}
+
+export interface ifavoriteFilms {
+  id: string;
+  userid: string;
+  filmid: string;
 }

@@ -49,16 +49,6 @@ export async function deleteData(id: string) {
   return await response.json();
 }
 
-export async function fetchUsers() {
-  const response = await fetch(`${restApiUrl}users`, {
-    method: "GET", // *GET, POST, PUT, DELETE, etc.
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-  return await response.json();
-}
-
 export async function fetchUser(email: string) {
   const response = await fetch(`${restApiUrl}users?email=${email}`, {
     method: "GET", // *GET, POST, PUT, DELETE, etc.
@@ -80,6 +70,43 @@ export async function pushUser(data: ifechuser) {
   return await response.json();
 }
 
+export async function fetchFavoriteFilms(userid: string) {
+  const response = await fetch(`${restApiUrl}favorite?userid=${userid}`, {
+    method: "GET", // *GET, POST, PUT, DELETE, etc.
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  return await response.json();
+}
+
+export async function postFavoriteFilms(
+  id: string,
+  userid: string,
+  filmid: string
+) {
+  const response = await fetch(`${restApiUrl}favorite`, {
+    method: "POST", // *GET, POST, PUT, DELETE, etc.
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ id: id, userid: userid, filmid: filmid }),
+  });
+  await response.json().catch((e) => console.log("Request failed", e));
+}
+
+export async function deleteFavoriteFilms(id: string) {
+  const response = await fetch(`${restApiUrl}favorite/${id}`, {
+    method: "DELETE", // *GET, POST, PUT, DELETE, etc.
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  await response.json().catch((e) => console.log("Request failed", e));
+}
+
+//
+//
 export const emptyF: ifilm = {
   id: uid(),
   title: "",

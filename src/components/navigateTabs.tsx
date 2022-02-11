@@ -1,10 +1,11 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Box, Tab, Tabs } from "@mui/material";
 
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import SlideshowOutlinedIcon from "@mui/icons-material/SlideshowOutlined";
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 import LoginOutlinedIcon from "@mui/icons-material/LoginOutlined";
+import LogoutIcon from "@mui/icons-material/Logout";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "./App";
 
@@ -29,12 +30,17 @@ export function idTabs(to: string) {
 
 interface NavTebsProp {
   idTab: number;
+  onLogOut: () => void;
 }
 
-export function NavigateTebs({ idTab }: NavTebsProp) {
+export function NavigateTabs({ idTab, onLogOut }: NavTebsProp) {
   const [value, setValue] = useState(idTab);
   const navigate = useNavigate();
   const user = useContext(UserContext);
+
+  useEffect(() => {
+    setValue(idTab);
+  }, [idTab]);
 
   const handleChange = (
     event: React.SyntheticEvent<Element, Event>,
@@ -56,7 +62,7 @@ export function NavigateTebs({ idTab }: NavTebsProp) {
         navigate("/addfilm");
         break;
       case 3:
-        navigate("/signup");
+        user.userId.length === 0 ? navigate("/signup") : onLogOut();
         break;
     }
   }
@@ -72,15 +78,18 @@ export function NavigateTebs({ idTab }: NavTebsProp) {
             label="Films"
           />
           <Tab
+            disabled={user.userId.length === 0 || !user.isAdmin}
             icon={<AddCircleOutlineOutlinedIcon />}
             iconPosition="start"
             label="Add new film"
           />
           <Tab
-            icon={<LoginOutlinedIcon />}
+            icon={
+              user.userId.length === 0 ? <LoginOutlinedIcon /> : <LogoutIcon />
+            }
             iconPosition="start"
             sx={{ marginLeft: "auto" }}
-            label={user.length === 0 ? "Login" : "Singout"}
+            label={user.userId.length === 0 ? "Login" : "Logout"}
           />
         </Tabs>
       </Box>

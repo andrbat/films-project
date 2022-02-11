@@ -16,7 +16,7 @@ import PersonAddAltOutlinedIcon from "@mui/icons-material/PersonAddAltOutlined";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useEffect, useState } from "react";
-import { iuser } from "../types/type";
+import { ifechuser, iuser } from "../types/type";
 import { fetchUser } from "./data/data";
 import { addNotify } from "./notyfy";
 
@@ -24,7 +24,7 @@ const emptyU = { name: "", password: "", email: "", agree: false };
 
 interface SignUpProps {
   onSave: (curUser: iuser) => void;
-  onLogin: (userId: string) => void;
+  onLogin: (userId: ifechuser) => void;
 }
 
 export function SignUp({ onSave, onLogin }: SignUpProps) {
@@ -80,7 +80,7 @@ export function SignUp({ onSave, onLogin }: SignUpProps) {
         if (val.length === 0 || val[0].password !== password) {
           addNotify("User or password is wrong!!!", true);
         } else {
-          onLogin(val[0].id);
+          onLogin(val[0]);
         }
       })
       .catch((e) => console.log("Request failed", e));

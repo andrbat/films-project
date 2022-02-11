@@ -4,9 +4,10 @@ import NoteAltOutlinedIcon from "@mui/icons-material/NoteAltOutlined";
 import DeleteIcon from "@mui/icons-material/Delete";
 import "./films.css";
 import Film from "./film";
-import React from "react";
+import React, { useContext } from "react";
 import EditFilm from "./editFilm";
 import { emptyF } from "./data/data";
+import { UserContext } from "./App";
 
 export const style = {
   position: "absolute",
@@ -24,13 +25,16 @@ interface HomeProps {
   curFilms: ifilm[];
   onDelete: (id: string) => void;
   onEdit: (film: ifilm) => void;
+  onFavorite: (filmId: string, checkFav: boolean) => void;
 }
 
-function Films({ curFilms, onDelete, onEdit }: HomeProps) {
+function Films({ curFilms, onDelete, onEdit, onFavorite }: HomeProps) {
   const [open, setOpen] = React.useState(false);
   const [edit, setEdit] = React.useState(false);
   const [editFilm, setEditFilm] = React.useState<ifilm>(emptyF);
   const [description, setDescription] = React.useState("");
+  const user = useContext(UserContext);
+
   function handleOpen(d: string) {
     setOpen(true);
     setDescription(d);
@@ -44,8 +48,12 @@ function Films({ curFilms, onDelete, onEdit }: HomeProps) {
         {curFilms.map((e) => (
           <Grid item xs={12} md={4} xl={3} key={e.id}>
             <div className="films">
-              <Film curFilm={e} handlerClick={handleOpen} />
-              <div className="films_buttons">
+              <Film
+                curFilm={e}
+                handlerClick={handleOpen}
+                onFavorite={onFavorite}
+              />
+              <div className="films_buttons" hidden={!user.isAdmin}>
                 <Button
                   variant="outlined"
                   size="medium"

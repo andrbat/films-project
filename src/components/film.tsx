@@ -3,13 +3,17 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import GroupsIcon from "@mui/icons-material/Groups";
 import StarIcon from "@mui/icons-material/Star";
 import "./film.css";
+import { useContext } from "react";
+import { UserContext } from "./App";
 
 interface FilmProps {
   curFilm: ifilm;
   handlerClick: (d: string) => void;
+  onFavorite: (filmId: string, checkFav: boolean) => void;
 }
 
-function Film({ curFilm, handlerClick }: FilmProps) {
+function Film({ curFilm, handlerClick, onFavorite }: FilmProps) {
+  const user = useContext(UserContext);
   return (
     <>
       <img
@@ -31,16 +35,14 @@ function Film({ curFilm, handlerClick }: FilmProps) {
         &nbsp; min
       </h3>
       <div className="film_price">{"$ " + curFilm.price}</div>
-      <div className="film_featured"></div>
-      <StarIcon
-        sx={{
-          position: "absolute",
-          display: "inline-block",
-          top: 0,
-          right: 0,
-          color: curFilm.featured ? "yellow" : "#e2e2e2",
-        }}
-      />
+      <div
+        className={
+          !curFilm.featured ? "film_star" : "film_star film_star__active"
+        }
+        onClick={() => onFavorite(curFilm.id, curFilm.featured)}
+      >
+        <StarIcon />
+      </div>
     </>
   );
 }

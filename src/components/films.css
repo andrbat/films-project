@@ -8,3 +8,16 @@
 .films_buttons {
   text-align: center;
 }
+
+.film_star {
+  position: absolute;
+  display: inline-block;
+  top: 0;
+  right: 0;
+  cursor: pointer;
+  color: #e2e2e2;
+}
+
+.film_star__active {
+  color: yellow;
+}

@@ -1,13 +1,16 @@
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { Box } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { ifilm, iuser } from "../types/type";
+import { ifavoriteFilms, ifechuser, ifilm, iuser } from "../types/type";
 import "./App.css";
 import {
   deleteData,
+  deleteFavoriteFilms,
   editData,
   emptyF,
   fetchData,
+  fetchFavoriteFilms,
+  postFavoriteFilms,
   pushData,
   pushUser,
   uid,
@@ -15,17 +18,17 @@ import {
 import Films from "./films";
 
 import EditFilm from "./editFilm";
-import { idTabs, NavigateTebs } from "./navigateTebs";
+import { idTabs, NavigateTabs } from "./navigateTabs";
 import { Home } from "./home";
 import { SignUp } from "./signup";
 import { addNotify } from "./notyfy";
-import SignOut from "./signout";
 
-export const UserContext = React.createContext("");
+export const UserContext = React.createContext({ userId: "", isAdmin: false });
 
 function App() {
   const [films, setFilms] = useState<ifilm[]>([]);
-  const [regUser, setRegUser] = useState("");
+  const [regUser, setRegUser] = useState({ userId: "", isAdmin: false });
+  const [favoriteFilms, setFavoriteFilms] = useState<ifavoriteFilms[]>([]);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -38,10 +41,31 @@ function App() {
       .catch((e) => console.log("Request failed", e));
   }, []);
 
+  useEffect(() => {
+    setFilms((oldS) => {
+      const newS = [...oldS];
+      newS.forEach(
+        (e) =>
+          (e.featured =
+            favoriteFilms.findIndex((el) => el.filmid === e.id) === -1
+              ? false
+              : true)
+      );
+      return newS;
+    });
+  }, [favoriteFilms]);
+
+  function getFavorite(id: string) {
+    if (!(id.length === 0)) {
+      fetchFavoriteFilms(id)
+        .then((val) => setFavoriteFilms(val))
+        .catch((e) => console.log("Request failed", e));
+    }
+  }
+
   const handleDelete = (id: string) => {
     deleteData(id)
       .then((val) => {
-        // console.log(id, val);
         setFilms((oldF) => {
           return oldF.filter((e) => e.id !== id);
         });
@@ -78,25 +102,61 @@ function App() {
       name: curUser.name,
       email: curUser.email,
       password: curUser.password,
+      isadmin: false,
     };
     pushUser(user)
       .then((val) => {
         addNotify("Complited !!!", false);
-        setRegUser(user.id);
+        setRegUser((oldS) => {
+          return { ...oldS, userId: user.id };
+        });
         navigate("/films");
+        getFavorite(user.id);
       })
       .catch((e) => console.log("Request failed", e));
   };
 
-  const handlerLogin = (userId: string) => {
-    setRegUser(userId);
+  const handlerLogin = (user: ifechuser) => {
+    setRegUser((oldS) => {
+      return { ...oldS, userId: user.id, isAdmin: user.isadmin };
+    });
     navigate("/films");
+    getFavorite(user.id);
+  };
+
+  const handlerLogOut = () => {
+    setRegUser({ ...{ userId: "", isAdmin: false } });
+    setFavoriteFilms([]);
+    navigate("/");
+  };
+
+  const handlerSetFavorite = (filmId: string, checkFav: boolean) => {
+    if (!(regUser.userId.length === 0)) {
+      setFavoriteFilms((oldS) => {
+        if (checkFav) {
+          oldS
+            .filter((e) => e.filmid === filmId)
+            .forEach((e) => deleteFavoriteFilms(e.id));
+          return oldS.filter((e) => !(e.filmid === filmId));
+        } else {
+          const favid = uid();
+          postFavoriteFilms(favid, regUser.userId, filmId);
+          return [
+            ...oldS,
+            { id: favid, userid: regUser.userId, filmid: filmId },
+          ];
+        }
+      });
+    }
   };
 
   return (
     <Box sx={{ maxWidth: "1400px", width: "100%", margin: "auto" }}>
       <UserContext.Provider value={regUser}>
-        <NavigateTebs idTab={idTabs(location.pathname)} />
+        <NavigateTabs
+          idTab={idTabs(location.pathname)}
+          onLogOut={handlerLogOut}
+        />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route
@@ -106,6 +166,7 @@ function App() {
                 curFilms={films}
                 onDelete={handleDelete}
                 onEdit={handleAddEdit}
+                onFavorite={handlerSetFavorite}
               />
             }
           />
@@ -117,8 +178,6 @@ function App() {
             path="signup"
             element={<SignUp onSave={handleNewUser} onLogin={handlerLogin} />}
           />
-          <Route path="signout" element={<SignOut />} />
-
           <Route
             path="*"
             element={

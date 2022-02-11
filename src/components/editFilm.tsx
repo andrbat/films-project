@@ -4,12 +4,13 @@ import { Button, InputAdornment } from "@mui/material";
 import TocOutlinedIcon from "@mui/icons-material/TocOutlined";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import GroupsIcon from "@mui/icons-material/Groups";
-import React from "react";
+import React, { useContext } from "react";
 import { ifilm } from "../types/type";
 
 import DoNotDisturbAltOutlinedIcon from "@mui/icons-material/DoNotDisturbAltOutlined";
 import BookmarkAddedOutlinedIcon from "@mui/icons-material/BookmarkAddedOutlined";
 import AttachFileOutlinedIcon from "@mui/icons-material/AttachFileOutlined";
+import { UserContext } from "./App";
 
 interface EditFilmProps {
   onNew: (film: ifilm) => void;
@@ -19,6 +20,7 @@ interface EditFilmProps {
 export default function EditFilm({ onNew, initVal }: EditFilmProps) {
   const [film, setFilm] = React.useState<ifilm>(initVal);
   const [verify, setVerify] = React.useState(false);
+  const user = useContext(UserContext);
 
   React.useMemo(() => {
     setFilm(initVal);
@@ -154,7 +156,7 @@ export default function EditFilm({ onNew, initVal }: EditFilmProps) {
           onChange={(e) => handeChangeS(e, "description")}
         />
       </div>
-      <div className="films_buttons">
+      <div className="films_buttons" hidden={!user.isAdmin}>
         <Button
           variant="outlined"
           size="medium"
