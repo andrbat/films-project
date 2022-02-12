@@ -1,7 +1,7 @@
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { Box } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { ifavoriteFilms, ifetchuser, ifilm, iuser } from "../types/type";
+import { ifavoriteFilms, ifilm, iuser } from "../types/type";
 import "./App.css";
 import {
   deleteData,
@@ -29,7 +29,7 @@ export const UserContext = React.createContext({
 
 function App() {
   const [films, setFilms] = useState<ifilm[]>([]);
-  const [regUser, setRegUser] = useState({ userEmail: "111", isAdmin: true });
+  const [regUser, setRegUser] = useState({ userEmail: "", isAdmin: false });
   const [favoriteFilms, setFavoriteFilms] = useState<ifavoriteFilms[]>([]);
 
   const location = useLocation();
@@ -90,9 +90,11 @@ function App() {
     } else {
       editData(film)
         .then((val) => {
-          newF[idx] = film;
-          setFilms(newF);
-          addNotify("Complited !!!", false);
+          if (val.ok) {
+            newF[idx] = film;
+            setFilms(newF);
+            addNotify("Complited !!!", false);
+          }
         })
         .catch((e) => console.log("Request failed", e));
     }
@@ -117,12 +119,12 @@ function App() {
       .catch((e) => console.log("Request failed", e));
   };
 
-  const handlerLogin = (user: ifetchuser) => {
+  const handlerLogin = (useremail: string, isadmin: boolean) => {
     setRegUser((oldS) => {
-      return { ...oldS, userEmail: user.email, isAdmin: user.isadmin };
+      return { ...oldS, userEmail: useremail, isAdmin: isadmin };
     });
     navigate("/films");
-    getFavorite(user.email);
+    getFavorite(useremail);
   };
 
   const handlerLogOut = () => {

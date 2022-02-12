@@ -24,7 +24,7 @@ const emptyU = { name: "", password: "", email: "", agree: false };
 
 interface SignUpProps {
   onSave: (curUser: iuser) => void;
-  onLogin: (userId: ifetchuser) => void;
+  onLogin: (useremail: string, isadmin: boolean) => void;
 }
 
 export function SignUp({ onSave, onLogin }: SignUpProps) {
@@ -76,13 +76,14 @@ export function SignUp({ onSave, onLogin }: SignUpProps) {
 
   const handlerLogin = () => {
     fetchUser(login, password)
+      .then((val) => val.json())
       .then((val) => {
-        // if (val.length === 0 || val[0].password !== password) {
-        //   addNotify("User or password is wrong!!!", true);
-        // } else {
-        //   onLogin(val[0]);
-        // }
-        console.log(val);
+        if (!val.email || val.email.length === 0) {
+          addNotify("Wrong user or password!!!", true);
+        } else {
+          onLogin(val.email, val.isadmin === "true");
+          localStorage.setItem("token", val.token);
+        }
       })
       .catch((e) => console.log("Request failed", e));
   };

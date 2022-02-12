@@ -23,6 +23,7 @@ export async function pushData(data: ifilm) {
     method: "POST", // *GET, POST, PUT, DELETE, etc.
     headers: {
       "Content-Type": "application/json",
+      Authorization: "Bearer " + localStorage.getItem("token"),
     },
     body: JSON.stringify(data),
   });
@@ -34,6 +35,7 @@ export async function editData(data: ifilm) {
     method: "PUT", // *GET, POST, PUT, DELETE, etc.
     headers: {
       "Content-Type": "application/json",
+      Authorization: "Bearer " + localStorage.getItem("token"),
     },
     body: JSON.stringify(data),
   });
@@ -45,6 +47,7 @@ export async function deleteData(id: number) {
     method: "DELETE", // *GET, POST, PUT, DELETE, etc.
     headers: {
       "Content-Type": "application/json",
+      Authorization: "Bearer " + localStorage.getItem("token"),
     },
   });
   return response;
@@ -60,7 +63,7 @@ export async function fetchUser(email: string, password: string) {
     },
     body: JSON.stringify({ email: email, password: password }),
   });
-  return await response.json();
+  return response;
 }
 
 export async function pushUser(data: ifetchuser) {
