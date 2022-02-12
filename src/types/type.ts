@@ -1,5 +1,5 @@
 export interface ifilm {
-  id: string;
+  id: number;
   title: string;
   director: string;
   duration: number;
@@ -9,8 +9,7 @@ export interface ifilm {
   description: string;
 }
 
-export interface ifechuser {
-  id: string;
+export interface ifetchuser {
   name: string;
   email: string;
   password: string;
@@ -25,7 +24,6 @@ export interface iuser {
 }
 
 export interface ifavoriteFilms {
-  id: string;
-  userid: string;
-  filmid: string;
+  useremail: string;
+  filmid: number;
 }

@@ -16,7 +16,7 @@ import PersonAddAltOutlinedIcon from "@mui/icons-material/PersonAddAltOutlined";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useEffect, useState } from "react";
-import { ifechuser, iuser } from "../types/type";
+import { ifetchuser, iuser } from "../types/type";
 import { fetchUser } from "./data/data";
 import { addNotify } from "./notyfy";
 
@@ -24,7 +24,7 @@ const emptyU = { name: "", password: "", email: "", agree: false };
 
 interface SignUpProps {
   onSave: (curUser: iuser) => void;
-  onLogin: (userId: ifechuser) => void;
+  onLogin: (userId: ifetchuser) => void;
 }
 
 export function SignUp({ onSave, onLogin }: SignUpProps) {
@@ -63,25 +63,26 @@ export function SignUp({ onSave, onLogin }: SignUpProps) {
   };
 
   const handlerSave = () => {
-    fetchUser(curUser.email)
-      .then((val) => {
-        if (val.length === 0) {
-          onSave(curUser);
-        } else {
-          addNotify("User is exist!!!", true);
-        }
-      })
-      .catch((e) => console.log("Request failed", e));
+    // fetchUser(curUser.email)
+    //   .then((val) => {
+    //     if (val.length === 0) {
+    //       onSave(curUser);
+    //     } else {
+    //       addNotify("User is exist!!!", true);
+    //     }
+    //   })
+    //   .catch((e) => console.log("Request failed", e));
   };
 
   const handlerLogin = () => {
-    fetchUser(login)
+    fetchUser(login, password)
       .then((val) => {
-        if (val.length === 0 || val[0].password !== password) {
-          addNotify("User or password is wrong!!!", true);
-        } else {
-          onLogin(val[0]);
-        }
+        // if (val.length === 0 || val[0].password !== password) {
+        //   addNotify("User or password is wrong!!!", true);
+        // } else {
+        //   onLogin(val[0]);
+        // }
+        console.log(val);
       })
       .catch((e) => console.log("Request failed", e));
   };

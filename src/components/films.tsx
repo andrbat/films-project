@@ -23,9 +23,9 @@ export const style = {
 
 interface HomeProps {
   curFilms: ifilm[];
-  onDelete: (id: string) => void;
+  onDelete: (id: number) => void;
   onEdit: (film: ifilm) => void;
-  onFavorite: (filmId: string, checkFav: boolean) => void;
+  onFavorite: (filmId: number, checkFav: boolean) => void;
 }
 
 function Films({ curFilms, onDelete, onEdit, onFavorite }: HomeProps) {

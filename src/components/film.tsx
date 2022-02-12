@@ -3,17 +3,14 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import GroupsIcon from "@mui/icons-material/Groups";
 import StarIcon from "@mui/icons-material/Star";
 import "./film.css";
-import { useContext } from "react";
-import { UserContext } from "./App";
 
 interface FilmProps {
   curFilm: ifilm;
   handlerClick: (d: string) => void;
-  onFavorite: (filmId: string, checkFav: boolean) => void;
+  onFavorite: (filmId: number, checkFav: boolean) => void;
 }
 
 function Film({ curFilm, handlerClick, onFavorite }: FilmProps) {
-  const user = useContext(UserContext);
   return (
     <>
       <img

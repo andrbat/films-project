@@ -62,7 +62,7 @@ export function NavigateTabs({ idTab, onLogOut }: NavTebsProp) {
         navigate("/addfilm");
         break;
       case 3:
-        user.userId.length === 0 ? navigate("/signup") : onLogOut();
+        user.userEmail.length === 0 ? navigate("/signup") : onLogOut();
         break;
     }
   }
@@ -78,18 +78,22 @@ export function NavigateTabs({ idTab, onLogOut }: NavTebsProp) {
             label="Films"
           />
           <Tab
-            disabled={user.userId.length === 0 || !user.isAdmin}
+            disabled={user.userEmail.length === 0 || !user.isAdmin}
             icon={<AddCircleOutlineOutlinedIcon />}
             iconPosition="start"
             label="Add new film"
           />
           <Tab
             icon={
-              user.userId.length === 0 ? <LoginOutlinedIcon /> : <LogoutIcon />
+              user.userEmail.length === 0 ? (
+                <LoginOutlinedIcon />
+              ) : (
+                <LogoutIcon />
+              )
             }
             iconPosition="start"
             sx={{ marginLeft: "auto" }}
-            label={user.userId.length === 0 ? "Login" : "Logout"}
+            label={user.userEmail.length === 0 ? "Login" : "Logout"}
           />
         </Tabs>
       </Box>

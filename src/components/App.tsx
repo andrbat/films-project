@@ -1,7 +1,7 @@
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { Box } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { ifavoriteFilms, ifechuser, ifilm, iuser } from "../types/type";
+import { ifavoriteFilms, ifetchuser, ifilm, iuser } from "../types/type";
 import "./App.css";
 import {
   deleteData,
@@ -13,7 +13,6 @@ import {
   postFavoriteFilms,
   pushData,
   pushUser,
-  uid,
 } from "./data/data";
 import Films from "./films";
 
@@ -23,11 +22,14 @@ import { Home } from "./home";
 import { SignUp } from "./signup";
 import { addNotify } from "./notyfy";
 
-export const UserContext = React.createContext({ userId: "", isAdmin: false });
+export const UserContext = React.createContext({
+  userEmail: "",
+  isAdmin: false,
+});
 
 function App() {
   const [films, setFilms] = useState<ifilm[]>([]);
-  const [regUser, setRegUser] = useState({ userId: "", isAdmin: false });
+  const [regUser, setRegUser] = useState({ userEmail: "111", isAdmin: true });
   const [favoriteFilms, setFavoriteFilms] = useState<ifavoriteFilms[]>([]);
 
   const location = useLocation();
@@ -55,15 +57,15 @@ function App() {
     });
   }, [favoriteFilms]);
 
-  function getFavorite(id: string) {
-    if (!(id.length === 0)) {
-      fetchFavoriteFilms(id)
+  function getFavorite(email: string) {
+    if (!(email.length === 0)) {
+      fetchFavoriteFilms(email)
         .then((val) => setFavoriteFilms(val))
         .catch((e) => console.log("Request failed", e));
     }
   }
 
-  const handleDelete = (id: string) => {
+  const handleDelete = (id: number) => {
     deleteData(id)
       .then((val) => {
         setFilms((oldF) => {
@@ -84,7 +86,7 @@ function App() {
           setFilms(newF);
           addNotify("Complited !!!", false);
         })
-        .catch((e) => console.log("Request failed", e));
+        .catch((e) => console.log("Request failed (push)", e));
     } else {
       editData(film)
         .then((val) => {
@@ -98,7 +100,6 @@ function App() {
 
   const handleNewUser = (curUser: iuser) => {
     const user = {
-      id: uid(),
       name: curUser.name,
       email: curUser.email,
       password: curUser.password,
@@ -108,43 +109,39 @@ function App() {
       .then((val) => {
         addNotify("Complited !!!", false);
         setRegUser((oldS) => {
-          return { ...oldS, userId: user.id };
+          return { ...oldS, userEmail: user.email };
         });
         navigate("/films");
-        getFavorite(user.id);
+        getFavorite(user.email);
       })
       .catch((e) => console.log("Request failed", e));
   };
 
-  const handlerLogin = (user: ifechuser) => {
+  const handlerLogin = (user: ifetchuser) => {
     setRegUser((oldS) => {
-      return { ...oldS, userId: user.id, isAdmin: user.isadmin };
+      return { ...oldS, userEmail: user.email, isAdmin: user.isadmin };
     });
     navigate("/films");
-    getFavorite(user.id);
+    getFavorite(user.email);
   };
 
   const handlerLogOut = () => {
-    setRegUser({ ...{ userId: "", isAdmin: false } });
+    setRegUser({ ...{ userEmail: "", isAdmin: false } });
     setFavoriteFilms([]);
     navigate("/");
   };
 
-  const handlerSetFavorite = (filmId: string, checkFav: boolean) => {
-    if (!(regUser.userId.length === 0)) {
+  const handlerSetFavorite = (filmId: number, checkFav: boolean) => {
+    if (!(regUser.userEmail.length === 0)) {
       setFavoriteFilms((oldS) => {
         if (checkFav) {
           oldS
             .filter((e) => e.filmid === filmId)
-            .forEach((e) => deleteFavoriteFilms(e.id));
+            .forEach((e) => deleteFavoriteFilms(e.useremail, e.filmid));
           return oldS.filter((e) => !(e.filmid === filmId));
         } else {
-          const favid = uid();
-          postFavoriteFilms(favid, regUser.userId, filmId);
-          return [
-            ...oldS,
-            { id: favid, userid: regUser.userId, filmid: filmId },
-          ];
+          postFavoriteFilms(regUser.userEmail, filmId);
+          return [...oldS, { useremail: regUser.userEmail, filmid: filmId }];
         }
       });
     }
