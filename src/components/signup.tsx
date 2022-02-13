@@ -16,14 +16,14 @@ import PersonAddAltOutlinedIcon from "@mui/icons-material/PersonAddAltOutlined";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useEffect, useState } from "react";
-import { ifetchuser, iuser } from "../types/type";
-import { fetchUser } from "./data/data";
+import { iuser } from "../types/type";
+import { fetchUser, pushUser } from "./data/data";
 import { addNotify } from "./notyfy";
 
 const emptyU = { name: "", password: "", email: "", agree: false };
 
 interface SignUpProps {
-  onSave: (curUser: iuser) => void;
+  onSave: (userEmail: string, isAdmin: boolean) => void;
   onLogin: (useremail: string, isadmin: boolean) => void;
 }
 
@@ -63,20 +63,25 @@ export function SignUp({ onSave, onLogin }: SignUpProps) {
   };
 
   const handlerSave = () => {
-    // fetchUser(curUser.email)
-    //   .then((val) => {
-    //     if (val.length === 0) {
-    //       onSave(curUser);
-    //     } else {
-    //       addNotify("User is exist!!!", true);
-    //     }
-    //   })
-    //   .catch((e) => console.log("Request failed", e));
+    pushUser({
+      name: curUser.name,
+      email: curUser.email,
+      password: curUser.password,
+      isadmin: false,
+    })
+      .then((val) => {
+        if (!val.email || val.email.length === 0) {
+          addNotify("Wrong user!!!", true);
+        } else {
+          onSave(val.email, val.isadmin === "true");
+          localStorage.setItem("token", val.token);
+        }
+      })
+      .catch((e) => console.log("Request failed", e));
   };
 
   const handlerLogin = () => {
     fetchUser(login, password)
-      .then((val) => val.json())
       .then((val) => {
         if (!val.email || val.email.length === 0) {
           addNotify("Wrong user or password!!!", true);

@@ -4,9 +4,9 @@ import { ifilm, ifetchuser } from "../../types/type";
 //   return Date.now().toString(36) + Math.random().toString(36).substr(2);
 // }
 
-// const restApiUrl = "http://192.168.0.80/restapi/";
+const restApiUrl = "http://192.168.0.80/restapi/";
 // const restApiUrl = "http://andrbat.pp.ua/restapi/";
-const restApiUrl = "http://192.168.0.10:8000/";
+// const restApiUrl = "http://192.168.0.10:8000/";
 
 export async function fetchData() {
   const response = await fetch(`${restApiUrl}films`, {
@@ -63,11 +63,11 @@ export async function fetchUser(email: string, password: string) {
     },
     body: JSON.stringify({ email: email, password: password }),
   });
-  return response;
+  return await response.json();
 }
 
 export async function pushUser(data: ifetchuser) {
-  const response = await fetch(`${restApiUrl}users`, {
+  const response = await fetch(`${restApiUrl}user`, {
     method: "POST", // *GET, POST, PUT, DELETE, etc.
     headers: {
       "Content-Type": "application/json",
@@ -77,11 +77,14 @@ export async function pushUser(data: ifetchuser) {
   return await response.json();
 }
 
+// --------------- favorite ----------------------
+
 export async function fetchFavoriteFilms(email: string) {
-  const response = await fetch(`${restApiUrl}favorite?email=${email}`, {
+  const response = await fetch(`${restApiUrl}favorite`, {
     method: "GET", // *GET, POST, PUT, DELETE, etc.
     headers: {
       "Content-Type": "application/json",
+      Authorization: "Bearer " + localStorage.getItem("token"),
     },
   });
   return await response.json();
@@ -92,6 +95,7 @@ export async function postFavoriteFilms(useremail: string, filmid: number) {
     method: "POST", // *GET, POST, PUT, DELETE, etc.
     headers: {
       "Content-Type": "application/json",
+      Authorization: "Bearer " + localStorage.getItem("token"),
     },
     body: JSON.stringify({ useremail: useremail, filmid: filmid }),
   });
@@ -99,10 +103,11 @@ export async function postFavoriteFilms(useremail: string, filmid: number) {
 }
 
 export async function deleteFavoriteFilms(useremail: string, filmid: number) {
-  const response = await fetch(`${restApiUrl}favorite/${useremail}`, {
+  const response = await fetch(`${restApiUrl}favorite/${filmid}`, {
     method: "DELETE", // *GET, POST, PUT, DELETE, etc.
     headers: {
       "Content-Type": "application/json",
+      Authorization: "Bearer " + localStorage.getItem("token"),
     },
   });
   await response.json().catch((e) => console.log("Request failed", e));

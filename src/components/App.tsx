@@ -1,7 +1,7 @@
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { Box } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { ifavoriteFilms, ifilm, iuser } from "../types/type";
+import { ifavoriteFilms, ifilm } from "../types/type";
 import "./App.css";
 import {
   deleteData,
@@ -12,7 +12,6 @@ import {
   fetchFavoriteFilms,
   postFavoriteFilms,
   pushData,
-  pushUser,
 } from "./data/data";
 import Films from "./films";
 
@@ -100,23 +99,9 @@ function App() {
     }
   };
 
-  const handleNewUser = (curUser: iuser) => {
-    const user = {
-      name: curUser.name,
-      email: curUser.email,
-      password: curUser.password,
-      isadmin: false,
-    };
-    pushUser(user)
-      .then((val) => {
-        addNotify("Complited !!!", false);
-        setRegUser((oldS) => {
-          return { ...oldS, userEmail: user.email };
-        });
-        navigate("/films");
-        getFavorite(user.email);
-      })
-      .catch((e) => console.log("Request failed", e));
+  const handleNewUser = (userEmail: string, isAdmin: boolean) => {
+    setRegUser({ userEmail: userEmail, isAdmin: isAdmin });
+    navigate("/films");
   };
 
   const handlerLogin = (useremail: string, isadmin: boolean) => {
@@ -130,6 +115,7 @@ function App() {
   const handlerLogOut = () => {
     setRegUser({ ...{ userEmail: "", isAdmin: false } });
     setFavoriteFilms([]);
+    localStorage.removeItem("token");
     navigate("/");
   };
 
