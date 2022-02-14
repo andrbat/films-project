@@ -86,8 +86,8 @@ export function SignUp({ onSave, onLogin }: SignUpProps) {
         if (!val.email || val.email.length === 0) {
           addNotify("Wrong user or password!!!", true);
         } else {
-          onLogin(val.email, val.isadmin === "true");
           localStorage.setItem("token", val.token);
+          onLogin(val.email, val.isadmin === "true");
         }
       })
       .catch((e) => console.log("Request failed", e));
