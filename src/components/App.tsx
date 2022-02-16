@@ -34,12 +34,16 @@ function App() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  useEffect(() => {
+  function getFilms() {
     fetchData()
       .then((val) => {
         setFilms(val);
       })
       .catch((e) => console.log("Request failed", e));
+  }
+
+  useEffect(() => {
+    getFilms();
   }, []);
 
   useEffect(() => {
@@ -75,28 +79,30 @@ function App() {
       .catch((e) => console.log("Request failed", e));
   };
 
-  const handleAddEdit = (film: ifilm) => {
+  const handleAddFilm = (film: ifilm) => {
+    // const newF = [...films];
+    pushData(film)
+      .then((val) => {
+        // newF.push(film);
+        // setFilms(newF);
+        getFilms();
+        addNotify("Complited !!!", false);
+      })
+      .catch((e) => console.log("Request failed (push)", e));
+  };
+
+  const handleEditFilm = (film: ifilm) => {
     const newF = [...films];
     const idx = newF.findIndex((e) => e.id === film.id);
-    if (idx === -1) {
-      pushData(film)
-        .then((val) => {
-          newF.push(film);
+    editData(film)
+      .then((val) => {
+        if (val.ok) {
+          newF[idx] = film;
           setFilms(newF);
           addNotify("Complited !!!", false);
-        })
-        .catch((e) => console.log("Request failed (push)", e));
-    } else {
-      editData(film)
-        .then((val) => {
-          if (val.ok) {
-            newF[idx] = film;
-            setFilms(newF);
-            addNotify("Complited !!!", false);
-          }
-        })
-        .catch((e) => console.log("Request failed", e));
-    }
+        }
+      })
+      .catch((e) => console.log("Request failed", e));
   };
 
   const handleNewUser = (userEmail: string, isAdmin: boolean) => {
@@ -150,14 +156,14 @@ function App() {
               <Films
                 curFilms={films}
                 onDelete={handleDelete}
-                onEdit={handleAddEdit}
+                onEdit={handleEditFilm}
                 onFavorite={handlerSetFavorite}
               />
             }
           />
           <Route
             path="addfilm"
-            element={<EditFilm onNew={handleAddEdit} initVal={emptyF} />}
+            element={<EditFilm onNew={handleAddFilm} initVal={emptyF} />}
           />
           <Route
             path="signup"

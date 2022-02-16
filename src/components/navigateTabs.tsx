@@ -78,7 +78,12 @@ export function NavigateTabs({ idTab, onLogOut }: NavTebsProp) {
             label="Films"
           />
           <Tab
-            disabled={user.userEmail.length === 0 || !user.isAdmin}
+            sx={
+              user.userEmail.length === 0 || !user.isAdmin
+                ? { display: "none" }
+                : {}
+            }
+            // disabled={user.userEmail.length === 0 || !user.isAdmin}
             icon={<AddCircleOutlineOutlinedIcon />}
             iconPosition="start"
             label="Add new film"
