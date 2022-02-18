@@ -2,6 +2,7 @@ import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { Box } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { ifavoriteFilms, ifilm } from "../types/type";
+import { useSelector, useDispatch } from "react-redux";
 import "./App.css";
 import {
   deleteData,
@@ -33,6 +34,11 @@ function App() {
 
   const location = useLocation();
   const navigate = useNavigate();
+
+  const selector = useSelector((e) => {
+    console.log(e);
+  });
+  const dispatch = useDispatch();
 
   function getFilms() {
     fetchData()
