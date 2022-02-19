@@ -21,6 +21,13 @@ import { idTabs, NavigateTabs } from "./navigateTabs";
 import { Home } from "./home";
 import { SignUp } from "./signup";
 import { addNotify } from "./notyfy";
+import { RootState } from "../store/storeTypes";
+import {
+  actionDeleteFilm,
+  actionEditFilm,
+  actionSetFilms,
+} from "../store/films/filmsActions";
+import { actionInitUser, actionSetUser } from "../store/user/userActions";
 
 export const UserContext = React.createContext({
   userEmail: "",
@@ -28,22 +35,19 @@ export const UserContext = React.createContext({
 });
 
 function App() {
-  const [films, setFilms] = useState<ifilm[]>([]);
-  const [regUser, setRegUser] = useState({ userEmail: "", isAdmin: false });
+  const films = useSelector((e: RootState) => e.films.films);
+  const regUser = useSelector((e: RootState) => e.user.user);
   const [favoriteFilms, setFavoriteFilms] = useState<ifavoriteFilms[]>([]);
 
   const location = useLocation();
   const navigate = useNavigate();
 
-  const selector = useSelector((e) => {
-    console.log(e);
-  });
   const dispatch = useDispatch();
 
   function getFilms() {
     fetchData()
-      .then((val) => {
-        setFilms(val);
+      .then((val: ifilm[]) => {
+        dispatch(actionSetFilms(val));
       })
       .catch((e) => console.log("Request failed", e));
   }
@@ -53,17 +57,17 @@ function App() {
   }, []);
 
   useEffect(() => {
-    setFilms((oldS) => {
-      const newS = [...oldS];
-      newS.forEach(
-        (e) =>
-          (e.featured =
-            favoriteFilms.findIndex((el) => el.filmid === e.id) === -1
-              ? false
-              : true)
-      );
-      return newS;
-    });
+    // setFilms((oldS) => {
+    //   const newS = [...oldS];
+    //   newS.forEach(
+    //     (e) =>
+    //       (e.featured =
+    //         favoriteFilms.findIndex((el) => el.filmid === e.id) === -1
+    //           ? false
+    //           : true)
+    //   );
+    //   return newS;
+    // });
   }, [favoriteFilms]);
 
   function getFavorite(email: string) {
@@ -77,20 +81,15 @@ function App() {
   const handleDelete = (id: number) => {
     deleteData(id)
       .then((val) => {
-        setFilms((oldF) => {
-          return oldF.filter((e) => e.id !== id);
-        });
+        dispatch(actionDeleteFilm(id));
         addNotify("Complited !!!", false);
       })
       .catch((e) => console.log("Request failed", e));
   };
 
   const handleAddFilm = (film: ifilm) => {
-    // const newF = [...films];
     pushData(film)
       .then((val) => {
-        // newF.push(film);
-        // setFilms(newF);
         getFilms();
         addNotify("Complited !!!", false);
       })
@@ -98,13 +97,10 @@ function App() {
   };
 
   const handleEditFilm = (film: ifilm) => {
-    const newF = [...films];
-    const idx = newF.findIndex((e) => e.id === film.id);
     editData(film)
       .then((val) => {
         if (val.ok) {
-          newF[idx] = film;
-          setFilms(newF);
+          dispatch(actionEditFilm(film));
           addNotify("Complited !!!", false);
         }
       })
@@ -112,20 +108,18 @@ function App() {
   };
 
   const handleNewUser = (userEmail: string, isAdmin: boolean) => {
-    setRegUser({ userEmail: userEmail, isAdmin: isAdmin });
+    dispatch(actionSetUser(userEmail, isAdmin));
     navigate("/films");
   };
 
   const handlerLogin = (useremail: string, isadmin: boolean) => {
-    setRegUser((oldS) => {
-      return { ...oldS, userEmail: useremail, isAdmin: isadmin };
-    });
+    dispatch(actionSetUser(useremail, isadmin));
     navigate("/films");
     getFavorite(useremail);
   };
 
   const handlerLogOut = () => {
-    setRegUser({ ...{ userEmail: "", isAdmin: false } });
+    dispatch(actionInitUser());
     setFavoriteFilms([]);
     localStorage.removeItem("token");
     navigate("/");

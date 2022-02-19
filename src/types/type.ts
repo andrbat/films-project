@@ -16,6 +16,11 @@ export interface ifetchuser {
   isadmin: boolean;
 }
 
+export interface iRegUser {
+  userEmail: string;
+  isAdmin: boolean;
+}
+
 export interface iuser {
   name: string;
   password: string;
