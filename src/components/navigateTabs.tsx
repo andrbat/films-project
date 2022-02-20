@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Box, Tab, Tabs } from "@mui/material";
 
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
@@ -7,7 +7,8 @@ import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOu
 import LoginOutlinedIcon from "@mui/icons-material/LoginOutlined";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useNavigate } from "react-router-dom";
-import { UserContext } from "./App";
+import { useSelector } from "react-redux";
+import { RootState } from "../store/storeTypes";
 
 export function idTabs(to: string) {
   let tab = 0;
@@ -36,7 +37,7 @@ interface NavTebsProp {
 export function NavigateTabs({ idTab, onLogOut }: NavTebsProp) {
   const [value, setValue] = useState(idTab);
   const navigate = useNavigate();
-  const user = useContext(UserContext);
+  const user = useSelector((e: RootState) => e.user.user);
 
   useEffect(() => {
     setValue(idTab);

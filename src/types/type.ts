@@ -27,8 +27,3 @@ export interface iuser {
   email: string;
   agree: boolean;
 }
-
-export interface ifavoriteFilms {
-  useremail: string;
-  filmid: number;
-}

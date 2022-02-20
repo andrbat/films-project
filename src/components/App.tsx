@@ -1,17 +1,16 @@
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { Box } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import { ifavoriteFilms, ifilm } from "../types/type";
+import React, { useEffect } from "react";
+import { ifilm } from "../types/type";
 import { useSelector, useDispatch } from "react-redux";
+import jwt_decode from "jwt-decode";
 import "./App.css";
 import {
   deleteData,
-  deleteFavoriteFilms,
   editData,
   emptyF,
   fetchData,
   fetchFavoriteFilms,
-  postFavoriteFilms,
   pushData,
 } from "./data/data";
 import Films from "./films";
@@ -25,19 +24,20 @@ import { RootState } from "../store/storeTypes";
 import {
   actionDeleteFilm,
   actionEditFilm,
+  actionMarkFilms,
   actionSetFilms,
 } from "../store/films/filmsActions";
 import { actionInitUser, actionSetUser } from "../store/user/userActions";
-
-export const UserContext = React.createContext({
-  userEmail: "",
-  isAdmin: false,
-});
+import {
+  actionInitFavorite,
+  actionSetFavorite,
+  actionToggleFavorite,
+} from "../store/favorite/favoriteActions";
 
 function App() {
   const films = useSelector((e: RootState) => e.films.films);
   const regUser = useSelector((e: RootState) => e.user.user);
-  const [favoriteFilms, setFavoriteFilms] = useState<ifavoriteFilms[]>([]);
+  const favoriteFilms = useSelector((e: RootState) => e.favorite.favorite);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -54,26 +54,28 @@ function App() {
 
   useEffect(() => {
     getFilms();
+    const token = localStorage.getItem("token");
+    if (token !== null) {
+      try {
+        const decoded: { email: string; isadmin: string } = jwt_decode(token);
+        dispatch(actionSetUser(decoded.email, decoded.isadmin === "true"));
+        getFavorite(decoded.email);
+      } catch (error) {
+        console.log("decoded JWT: ", error);
+      }
+    }
   }, []);
 
   useEffect(() => {
-    // setFilms((oldS) => {
-    //   const newS = [...oldS];
-    //   newS.forEach(
-    //     (e) =>
-    //       (e.featured =
-    //         favoriteFilms.findIndex((el) => el.filmid === e.id) === -1
-    //           ? false
-    //           : true)
-    //   );
-    //   return newS;
-    // });
+    dispatch(actionMarkFilms(favoriteFilms));
   }, [favoriteFilms]);
 
   function getFavorite(email: string) {
     if (!(email.length === 0)) {
       fetchFavoriteFilms(email)
-        .then((val) => setFavoriteFilms(val))
+        .then((val: { email: string; filmid: string }[]) =>
+          dispatch(actionSetFavorite(val.map((el) => Number(el.filmid))))
+        )
         .catch((e) => console.log("Request failed", e));
     }
   }
@@ -120,65 +122,64 @@ function App() {
 
   const handlerLogOut = () => {
     dispatch(actionInitUser());
-    setFavoriteFilms([]);
+    dispatch(actionInitFavorite());
     localStorage.removeItem("token");
     navigate("/");
   };
 
   const handlerSetFavorite = (filmId: number, checkFav: boolean) => {
     if (!(regUser.userEmail.length === 0)) {
-      setFavoriteFilms((oldS) => {
-        if (checkFav) {
-          oldS
-            .filter((e) => e.filmid === filmId)
-            .forEach((e) => deleteFavoriteFilms(e.useremail, e.filmid));
-          return oldS.filter((e) => !(e.filmid === filmId));
-        } else {
-          postFavoriteFilms(regUser.userEmail, filmId);
-          return [...oldS, { useremail: regUser.userEmail, filmid: filmId }];
-        }
-      });
+      dispatch(actionToggleFavorite(regUser.userEmail, filmId, checkFav));
+      // setFavoriteFilms((oldS) => {
+      //   if (checkFav) {
+      //     oldS
+      //       .filter((e) => e.filmid === filmId)
+      //       .forEach((e) => deleteFavoriteFilms(e.useremail, e.filmid));
+      //     return oldS.filter((e) => !(e.filmid === filmId));
+      //   } else {
+      //     postFavoriteFilms(regUser.userEmail, filmId);
+      //     return [...oldS, { useremail: regUser.userEmail, filmid: filmId }];
+      //   }
+      // });
     }
   };
 
   return (
     <Box sx={{ maxWidth: "1400px", width: "100%", margin: "auto" }}>
-      <UserContext.Provider value={regUser}>
-        <NavigateTabs
-          idTab={idTabs(location.pathname)}
-          onLogOut={handlerLogOut}
+      <NavigateTabs
+        idTab={idTabs(location.pathname)}
+        onLogOut={handlerLogOut}
+      />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route
+          path="films"
+          element={
+            <Films
+              curFilms={films}
+              onDelete={handleDelete}
+              onEdit={handleEditFilm}
+              onFavorite={handlerSetFavorite}
+            />
+          }
         />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route
-            path="films"
-            element={
-              <Films
-                curFilms={films}
-                onDelete={handleDelete}
-                onEdit={handleEditFilm}
-                onFavorite={handlerSetFavorite}
-              />
-            }
-          />
-          <Route
-            path="addfilm"
-            element={<EditFilm onNew={handleAddFilm} initVal={emptyF} />}
-          />
-          <Route
-            path="signup"
-            element={<SignUp onSave={handleNewUser} onLogin={handlerLogin} />}
-          />
-          <Route
-            path="*"
-            element={
-              <main style={{ padding: "1rem" }}>
-                <p>There's nothing here!</p>
-              </main>
-            }
-          />
-        </Routes>
-      </UserContext.Provider>
+        <Route
+          path="addfilm"
+          element={<EditFilm onNew={handleAddFilm} initVal={emptyF} />}
+        />
+        <Route
+          path="signup"
+          element={<SignUp onSave={handleNewUser} onLogin={handlerLogin} />}
+        />
+        <Route
+          path="*"
+          element={
+            <main style={{ padding: "1rem" }}>
+              <p>There's nothing here!</p>
+            </main>
+          }
+        />
+      </Routes>
     </Box>
   );
 }

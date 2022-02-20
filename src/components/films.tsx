@@ -4,10 +4,11 @@ import NoteAltOutlinedIcon from "@mui/icons-material/NoteAltOutlined";
 import DeleteIcon from "@mui/icons-material/Delete";
 import "./films.css";
 import Film from "./film";
-import React, { useContext } from "react";
+import React from "react";
 import EditFilm from "./editFilm";
 import { emptyF } from "./data/data";
-import { UserContext } from "./App";
+import { useSelector } from "react-redux";
+import { RootState } from "../store/storeTypes";
 
 export const style = {
   position: "absolute",
@@ -33,7 +34,7 @@ function Films({ curFilms, onDelete, onEdit, onFavorite }: HomeProps) {
   const [edit, setEdit] = React.useState(false);
   const [editFilm, setEditFilm] = React.useState<ifilm>(emptyF);
   const [description, setDescription] = React.useState("");
-  const user = useContext(UserContext);
+  const user = useSelector((e: RootState) => e.user.user);
 
   function handleOpen(d: string) {
     setOpen(true);
