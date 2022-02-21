@@ -130,17 +130,6 @@ function App() {
   const handlerSetFavorite = (filmId: number, checkFav: boolean) => {
     if (!(regUser.userEmail.length === 0)) {
       dispatch(actionToggleFavorite(regUser.userEmail, filmId, checkFav));
-      // setFavoriteFilms((oldS) => {
-      //   if (checkFav) {
-      //     oldS
-      //       .filter((e) => e.filmid === filmId)
-      //       .forEach((e) => deleteFavoriteFilms(e.useremail, e.filmid));
-      //     return oldS.filter((e) => !(e.filmid === filmId));
-      //   } else {
-      //     postFavoriteFilms(regUser.userEmail, filmId);
-      //     return [...oldS, { useremail: regUser.userEmail, filmid: filmId }];
-      //   }
-      // });
     }
   };
 
