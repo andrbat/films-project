@@ -27,12 +27,25 @@
   border-left: 20px solid transparent;
 }
 
-.film_featured::before {
+.film_star {
+  position: absolute;
+  display: inline-block;
+  top: 0;
+  right: 0;
+  cursor: pointer;
+  color: #e2e2e2;
+}
+
+.film_star__active {
+  color: yellow;
+}
+
+.film_star::before {
   content: "";
   display: inline-block;
   position: absolute;
   top: 0;
   right: 0;
-  border-top: 45px solid rgba(212, 212, 212, 0.6);
+  border-top: 45px solid rgba(212, 212, 212, 0.5);
   border-left: 45px solid transparent;
 }
