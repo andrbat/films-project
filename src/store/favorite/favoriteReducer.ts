@@ -1,7 +1,3 @@
-import {
-  deleteFavoriteFilms,
-  postFavoriteFilms,
-} from "../../components/data/data";
 import { FavoriteState } from "../storeTypes";
 import {
   FavoriteActions,
@@ -25,7 +21,6 @@ export default function favoriteReducer(
       return { ...state, favorite: action.payload.filmsId };
     case ToggleFavorite:
       if (action.payload.checkFav) {
-        deleteFavoriteFilms(action.payload.userEmail, action.payload.filmId);
         return {
           ...state,
           favorite: state.favorite.filter(
@@ -33,7 +28,6 @@ export default function favoriteReducer(
           ),
         };
       } else {
-        postFavoriteFilms(action.payload.userEmail, action.payload.filmId);
         return {
           ...state,
           favorite: [...state.favorite, action.payload.filmId],

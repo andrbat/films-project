@@ -3,14 +3,29 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import GroupsIcon from "@mui/icons-material/Groups";
 import StarIcon from "@mui/icons-material/Star";
 import "./film.css";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../store/storeTypes";
+import { actionToggleFavorite } from "../store/favorite/favoriteActions";
+import { deleteFavoriteFilms, postFavoriteFilms } from "./data/data";
 
 interface FilmProps {
   curFilm: ifilm;
   handlerClick: (d: string) => void;
-  onFavorite: (filmId: number, checkFav: boolean) => void;
 }
 
-function Film({ curFilm, handlerClick, onFavorite }: FilmProps) {
+function Film({ curFilm, handlerClick }: FilmProps) {
+  const regUser = useSelector((e: RootState) => e.user.user);
+  const dispatch = useDispatch();
+
+  const handlerSetFavorite = (filmId: number, checkFav: boolean) => {
+    if (!(regUser.userEmail.length === 0)) {
+      dispatch(actionToggleFavorite(regUser.userEmail, filmId, checkFav));
+      checkFav
+        ? deleteFavoriteFilms(regUser.userEmail, filmId)
+        : postFavoriteFilms(regUser.userEmail, filmId);
+    }
+  };
+
   return (
     <>
       <img
@@ -36,7 +51,7 @@ function Film({ curFilm, handlerClick, onFavorite }: FilmProps) {
         className={
           !curFilm.featured ? "film_star" : "film_star film_star__active"
         }
-        onClick={() => onFavorite(curFilm.id, curFilm.featured)}
+        onClick={() => handlerSetFavorite(curFilm.id, curFilm.featured)}
       >
         <StarIcon />
       </div>

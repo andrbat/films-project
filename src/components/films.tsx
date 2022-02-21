@@ -26,10 +26,9 @@ interface HomeProps {
   curFilms: ifilm[];
   onDelete: (id: number) => void;
   onEdit: (film: ifilm) => void;
-  onFavorite: (filmId: number, checkFav: boolean) => void;
 }
 
-function Films({ curFilms, onDelete, onEdit, onFavorite }: HomeProps) {
+function Films({ curFilms, onDelete, onEdit }: HomeProps) {
   const [open, setOpen] = React.useState(false);
   const [edit, setEdit] = React.useState(false);
   const [editFilm, setEditFilm] = React.useState<ifilm>(emptyF);
@@ -49,11 +48,7 @@ function Films({ curFilms, onDelete, onEdit, onFavorite }: HomeProps) {
         {curFilms.map((e) => (
           <Grid item xs={12} md={4} xl={3} key={e.id}>
             <div className="films">
-              <Film
-                curFilm={e}
-                handlerClick={handleOpen}
-                onFavorite={onFavorite}
-              />
+              <Film curFilm={e} handlerClick={handleOpen} />
               <div className="films_buttons" hidden={!user.isAdmin}>
                 <Button
                   variant="outlined"

@@ -31,12 +31,10 @@ import { actionInitUser, actionSetUser } from "../store/user/userActions";
 import {
   actionInitFavorite,
   actionSetFavorite,
-  actionToggleFavorite,
 } from "../store/favorite/favoriteActions";
 
 function App() {
   const films = useSelector((e: RootState) => e.films.films);
-  const regUser = useSelector((e: RootState) => e.user.user);
   const favoriteFilms = useSelector((e: RootState) => e.favorite.favorite);
 
   const location = useLocation();
@@ -127,12 +125,6 @@ function App() {
     navigate("/");
   };
 
-  const handlerSetFavorite = (filmId: number, checkFav: boolean) => {
-    if (!(regUser.userEmail.length === 0)) {
-      dispatch(actionToggleFavorite(regUser.userEmail, filmId, checkFav));
-    }
-  };
-
   return (
     <Box sx={{ maxWidth: "1400px", width: "100%", margin: "auto" }}>
       <NavigateTabs
@@ -148,7 +140,6 @@ function App() {
               curFilms={films}
               onDelete={handleDelete}
               onEdit={handleEditFilm}
-              onFavorite={handlerSetFavorite}
             />
           }
         />
