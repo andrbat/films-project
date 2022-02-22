@@ -8,6 +8,7 @@ export function actionSetFavorite(filmsId: number[]) {
     payload: { filmsId: filmsId },
   } as const;
 }
+export type SetFavoriteType = ReturnType<typeof actionSetFavorite>;
 
 export function actionInitFavorite() {
   return {
@@ -26,7 +27,6 @@ export function actionToggleFavorite(
   } as const;
 }
 
-type SetFavoriteType = ReturnType<typeof actionSetFavorite>;
 type InitFavoriteType = ReturnType<typeof actionInitFavorite>;
 type ToggleFavoriteType = ReturnType<typeof actionToggleFavorite>;
 

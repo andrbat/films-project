@@ -4,8 +4,8 @@ import { ifilm, ifetchuser } from "../../types/type";
 //   return Date.now().toString(36) + Math.random().toString(36).substr(2);
 // }
 
-const restApiUrl = "http://192.168.0.80/restapi/";
-// const restApiUrl = "http://andrbat.pp.ua/restapi/";
+// const restApiUrl = "http://192.168.0.80/restapi/";
+const restApiUrl = "http://andrbat.pp.ua/restapi/";
 // const restApiUrl = "http://192.168.0.10:8000/";
 
 export async function fetchData() {
@@ -87,7 +87,7 @@ export async function fetchFavoriteFilms(email: string) {
       Authorization: "Bearer " + localStorage.getItem("token"),
     },
   });
-  return await response.json();
+  return (await response.json()) as { email: string; filmid: string }[];
 }
 
 export async function postFavoriteFilms(useremail: string, filmid: number) {
@@ -122,7 +122,6 @@ export const emptyF: ifilm = {
   duration: 0,
   price: -1,
   img: "",
-  featured: false,
   description: "",
 };
 

@@ -5,7 +5,7 @@ import "./index.css";
 import App from "./components/App";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
-import store from "./store/store";
+import { store } from "./store/store";
 
 // if (localStorage.getItem("films") === null) {
 //   localStorage.setItem("films", JSON.stringify(testfilms));

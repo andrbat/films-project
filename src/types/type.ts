@@ -5,7 +5,6 @@ export interface ifilm {
   duration: number;
   price: number;
   img: string;
-  featured: boolean;
   description: string;
 }
 

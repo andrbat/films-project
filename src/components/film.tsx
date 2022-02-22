@@ -5,8 +5,6 @@ import StarIcon from "@mui/icons-material/Star";
 import "./film.css";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/storeTypes";
-import { actionToggleFavorite } from "../store/favorite/favoriteActions";
-import { deleteFavoriteFilms, postFavoriteFilms } from "./data/data";
 
 interface FilmProps {
   curFilm: ifilm;
@@ -17,12 +15,14 @@ function Film({ curFilm, handlerClick }: FilmProps) {
   const regUser = useSelector((e: RootState) => e.user.user);
   const dispatch = useDispatch();
 
-  const handlerSetFavorite = (filmId: number, checkFav: boolean) => {
+  const handlerToggleFavorite = (filmId: number) => {
     if (!(regUser.userEmail.length === 0)) {
-      dispatch(actionToggleFavorite(regUser.userEmail, filmId, checkFav));
-      checkFav
-        ? deleteFavoriteFilms(regUser.userEmail, filmId)
-        : postFavoriteFilms(regUser.userEmail, filmId);
+      dispatch(
+        ToggleFavorite({
+          userEmail: regUser.userEmail,
+          filmId: filmId,
+        })
+      );
     }
   };
 
@@ -51,7 +51,7 @@ function Film({ curFilm, handlerClick }: FilmProps) {
         className={
           !curFilm.featured ? "film_star" : "film_star film_star__active"
         }
-        onClick={() => handlerSetFavorite(curFilm.id, curFilm.featured)}
+        onClick={() => handlerToggleFavorite(curFilm.id)}
       >
         <StarIcon />
       </div>

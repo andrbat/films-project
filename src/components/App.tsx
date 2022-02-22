@@ -1,18 +1,11 @@
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { Box } from "@mui/material";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { ifilm } from "../types/type";
 import { useSelector, useDispatch } from "react-redux";
 import jwt_decode from "jwt-decode";
 import "./App.css";
-import {
-  deleteData,
-  editData,
-  emptyF,
-  fetchData,
-  fetchFavoriteFilms,
-  pushData,
-} from "./data/data";
+import { deleteData, editData, emptyF, pushData } from "./data/data";
 import Films from "./films";
 
 import EditFilm from "./editFilm";
@@ -21,21 +14,18 @@ import { Home } from "./home";
 import { SignUp } from "./signup";
 import { addNotify } from "./notyfy";
 import { RootState } from "../store/storeTypes";
-import {
-  actionDeleteFilm,
-  actionEditFilm,
-  actionMarkFilms,
-  actionSetFilms,
-} from "../store/films/filmsActions";
+import { actionDeleteFilm, actionEditFilm } from "../store/films/filmsActions";
 import { actionInitUser, actionSetUser } from "../store/user/userActions";
+import { fetchFilmsThunk } from "../store/films/filmsThunks";
 import {
-  actionInitFavorite,
-  actionSetFavorite,
-} from "../store/favorite/favoriteActions";
+  fetchFavoriteByEmail,
+  InitFavorite,
+} from "../store/favorite/favoriteSlice";
 
 function App() {
   const films = useSelector((e: RootState) => e.films.films);
   const favoriteFilms = useSelector((e: RootState) => e.favorite.favorite);
+  const loading = useSelector((e: RootState) => e.films.loading);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -43,11 +33,7 @@ function App() {
   const dispatch = useDispatch();
 
   function getFilms() {
-    fetchData()
-      .then((val: ifilm[]) => {
-        dispatch(actionSetFilms(val));
-      })
-      .catch((e) => console.log("Request failed", e));
+    dispatch(fetchFilmsThunk());
   }
 
   useEffect(() => {
@@ -64,17 +50,14 @@ function App() {
     }
   }, []);
 
-  useEffect(() => {
-    dispatch(actionMarkFilms(favoriteFilms));
-  }, [favoriteFilms]);
-
   function getFavorite(email: string) {
     if (!(email.length === 0)) {
-      fetchFavoriteFilms(email)
-        .then((val: { email: string; filmid: string }[]) =>
-          dispatch(actionSetFavorite(val.map((el) => Number(el.filmid))))
-        )
-        .catch((e) => console.log("Request failed", e));
+      dispatch(fetchFavoriteByEmail(email));
+      // fetchFavoriteFilms(email)
+      //   .then((val: { email: string; filmid: string }[]) =>
+      //     dispatch(actionSetFavorite(val.map((el) => Number(el.filmid))))
+      //   )
+      //   .catch((e) => console.log("Request failed", e));
     }
   }
 
@@ -120,7 +103,7 @@ function App() {
 
   const handlerLogOut = () => {
     dispatch(actionInitUser());
-    dispatch(actionInitFavorite());
+    dispatch(InitFavorite());
     localStorage.removeItem("token");
     navigate("/");
   };
@@ -136,11 +119,15 @@ function App() {
         <Route
           path="films"
           element={
-            <Films
-              curFilms={films}
-              onDelete={handleDelete}
-              onEdit={handleEditFilm}
-            />
+            loading ? (
+              <h1>Loading ...</h1>
+            ) : (
+              <Films
+                curFilms={films}
+                onDelete={handleDelete}
+                onEdit={handleEditFilm}
+              />
+            )
           }
         />
         <Route

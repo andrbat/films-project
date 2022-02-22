@@ -4,6 +4,7 @@ export const GetFilms = "GET Films";
 export const AddFilm = "ADD Film";
 export const EditFilm = "Edit Film";
 export const DeleteFilm = "DELETE Film";
+export const MarkFavoriteFilms = "MARK Films";
 
 export const FetchFilmsStart = "FETCH FILMS START";
 export const FetchFilmsError = "FETCH FILMS Error";
@@ -46,11 +47,18 @@ export function actionEditFilm(film: ifilm) {
 }
 type EditFilmType = ReturnType<typeof actionEditFilm>;
 
+export function actionMarkFilms(favoriteFilms: number[]) {
+  return {
+    type: MarkFavoriteFilms,
+    payload: { favoriteFilms },
+  } as const;
+}
+type MarkFilmsType = ReturnType<typeof actionMarkFilms>;
 
 export type FilmsActions =
   | FetchFilmsStartType
   | SetFilmsType
   | DeleteFilmType
   | EditFilmType
-  | FetchFilmsEroorType;
-
+  | FetchFilmsEroorType
+  | MarkFilmsType;

@@ -48,7 +48,7 @@ function Films({ curFilms, onDelete, onEdit }: HomeProps) {
         {curFilms.map((e) => (
           <Grid item xs={12} md={4} xl={3} key={e.id}>
             <div className="films">
-              <Film curFilm={e} handlerClick={handleOpen} />
+              <Film key={e.id} curFilm={e} handlerClick={handleOpen} />
               <div className="films_buttons" hidden={!user.isAdmin}>
                 <Button
                   variant="outlined"
