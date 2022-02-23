@@ -7,8 +7,10 @@ import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOu
 import LoginOutlinedIcon from "@mui/icons-material/LoginOutlined";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/storeTypes";
+import { actionInitUser } from "../store/user/userActions";
+import { InitFavorite } from "../store/favorite/favoriteSlice";
 
 export function idTabs(to: string) {
   let tab = 0;
@@ -31,17 +33,24 @@ export function idTabs(to: string) {
 
 interface NavTebsProp {
   idTab: number;
-  onLogOut: () => void;
 }
 
-export function NavigateTabs({ idTab, onLogOut }: NavTebsProp) {
+export function NavigateTabs({ idTab }: NavTebsProp) {
   const [value, setValue] = useState(idTab);
   const navigate = useNavigate();
   const user = useSelector((e: RootState) => e.user.user);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     setValue(idTab);
   }, [idTab]);
+
+  const handlerLogOut = () => {
+    dispatch(actionInitUser());
+    dispatch(InitFavorite());
+    localStorage.removeItem("token");
+    navigate("/");
+  };
 
   const handleChange = (
     event: React.SyntheticEvent<Element, Event>,
@@ -63,7 +72,7 @@ export function NavigateTabs({ idTab, onLogOut }: NavTebsProp) {
         navigate("/addfilm");
         break;
       case 3:
-        user.userEmail.length === 0 ? navigate("/signup") : onLogOut();
+        user.userEmail.length === 0 ? navigate("/signup") : handlerLogOut();
         break;
     }
   }

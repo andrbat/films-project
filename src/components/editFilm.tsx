@@ -14,11 +14,11 @@ import { useSelector } from "react-redux";
 import { RootState } from "../store/storeTypes";
 
 interface EditFilmProps {
-  onNew: (film: ifilm) => void;
+  onNewEdit: (film: ifilm) => void;
   initVal: ifilm;
 }
 
-export default function EditFilm({ onNew, initVal }: EditFilmProps) {
+export default function EditFilm({ onNewEdit, initVal }: EditFilmProps) {
   const [film, setFilm] = React.useState<ifilm>(initVal);
   const [verify, setVerify] = React.useState(false);
   const user = useSelector((e: RootState) => e.user.user);
@@ -164,7 +164,7 @@ export default function EditFilm({ onNew, initVal }: EditFilmProps) {
           startIcon={<BookmarkAddedOutlinedIcon />}
           disabled={!verify}
           onClick={(e) => {
-            onNew(film);
+            onNewEdit(film);
             setFilm(initVal);
           }}
         >

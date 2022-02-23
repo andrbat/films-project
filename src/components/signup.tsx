@@ -19,20 +19,20 @@ import { useEffect, useState } from "react";
 import { iuser } from "../types/type";
 import { fetchUser, pushUser } from "./data/data";
 import { addNotify } from "./notyfy";
+import { useDispatch } from "react-redux";
+import { actionSetUser } from "../store/user/userActions";
+import { useNavigate } from "react-router-dom";
 
 const emptyU = { name: "", password: "", email: "", agree: false };
 
-interface SignUpProps {
-  onSave: (userEmail: string, isAdmin: boolean) => void;
-  onLogin: (useremail: string, isadmin: boolean) => void;
-}
-
-export function SignUp({ onSave, onLogin }: SignUpProps) {
+export function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
   const [curUser, setCurUser] = useState<iuser>(emptyU);
   const [verify, setVerify] = useState(false);
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     setVerify(
@@ -73,7 +73,8 @@ export function SignUp({ onSave, onLogin }: SignUpProps) {
         if (!val.email || val.email.length === 0) {
           addNotify("Wrong user!!!", true);
         } else {
-          onSave(val.email, val.isadmin === "true");
+          dispatch(actionSetUser(val.email, val.isadmin === "true"));
+          navigate("/films");
           localStorage.setItem("token", val.token);
         }
       })
@@ -87,7 +88,8 @@ export function SignUp({ onSave, onLogin }: SignUpProps) {
           addNotify("Wrong user or password!!!", true);
         } else {
           localStorage.setItem("token", val.token);
-          onLogin(val.email, val.isadmin === "true");
+          dispatch(actionSetUser(val.email, val.isadmin === "true"));
+          navigate("/films");
         }
       })
       .catch((e) => console.log("Request failed", e));

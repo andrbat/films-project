@@ -19,7 +19,7 @@ export const fetchFavoriteByEmail = createAsyncThunk(
 );
 
 export const markFavorite = createAsyncThunk(
-  "favorite/toggleFavorite",
+  "favorite/markleFavorite",
   async (
     favorite: {
       userEmail: string;
@@ -33,7 +33,7 @@ export const markFavorite = createAsyncThunk(
 );
 
 export const unmarkFavorite = createAsyncThunk(
-  "favorite/toggleFavorite",
+  "favorite/unmarkFavorite",
   async (
     favorite: {
       userEmail: string;
@@ -51,7 +51,7 @@ export const favoriteSlice = createSlice({
   initialState,
   reducers: {
     InitFavorite: (state) => {
-      state = initialState;
+      state.favorite = [];
     },
     SetFavorite: (state, action: PayloadAction<{ filmsId: number[] }>) => {
       state.favorite = action.payload.filmsId;
@@ -61,9 +61,11 @@ export const favoriteSlice = createSlice({
     builder.addCase(fetchFavoriteByEmail.fulfilled, (state, action) => {
       state.favorite = action.payload.map((el) => Number(el.filmid));
     });
+
     builder.addCase(markFavorite.fulfilled, (state, action) => {
       state.favorite.push(action.payload);
     });
+
     builder.addCase(unmarkFavorite.fulfilled, (state, action) => {
       state.favorite = state.favorite.filter((e) => !(e === action.payload));
     });

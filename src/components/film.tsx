@@ -5,6 +5,7 @@ import StarIcon from "@mui/icons-material/Star";
 import "./film.css";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/storeTypes";
+import { markFavorite, unmarkFavorite } from "../store/favorite/favoriteSlice";
 
 interface FilmProps {
   curFilm: ifilm;
@@ -14,15 +15,23 @@ interface FilmProps {
 function Film({ curFilm, handlerClick }: FilmProps) {
   const regUser = useSelector((e: RootState) => e.user.user);
   const dispatch = useDispatch();
+  const favoriteFilms = useSelector((e: RootState) => e.favorite.favorite);
 
   const handlerToggleFavorite = (filmId: number) => {
     if (!(regUser.userEmail.length === 0)) {
-      dispatch(
-        ToggleFavorite({
-          userEmail: regUser.userEmail,
-          filmId: filmId,
-        })
-      );
+      favoriteFilms.findIndex((e) => e === curFilm.id) === -1
+        ? dispatch(
+            markFavorite({
+              userEmail: regUser.userEmail,
+              filmId: filmId,
+            })
+          )
+        : dispatch(
+            unmarkFavorite({
+              userEmail: regUser.userEmail,
+              filmId: filmId,
+            })
+          );
     }
   };
 
@@ -49,7 +58,9 @@ function Film({ curFilm, handlerClick }: FilmProps) {
       <div className="film_price">{"$ " + curFilm.price}</div>
       <div
         className={
-          !curFilm.featured ? "film_star" : "film_star film_star__active"
+          favoriteFilms.findIndex((e) => e === curFilm.id) === -1
+            ? "film_star"
+            : "film_star film_star__active"
         }
         onClick={() => handlerToggleFavorite(curFilm.id)}
       >

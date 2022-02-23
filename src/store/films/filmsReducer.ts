@@ -31,8 +31,9 @@ export default function filmsReducer(
       };
     case EditFilm:
       const idx = state.films.findIndex((e) => e.id === action.payload.film.id);
-      state.films[idx] = action.payload.film;
-      return { ...state, films: [...state.films] };
+      const newS = [...state.films];
+      newS[idx] = action.payload.film;
+      return { ...state, films: newS };
 
     default:
       return state;

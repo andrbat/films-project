@@ -7,8 +7,9 @@ import Film from "./film";
 import React from "react";
 import EditFilm from "./editFilm";
 import { emptyF } from "./data/data";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/storeTypes";
+import { deleteFilmThunk, editFilmThunk } from "../store/films/filmsThunks";
 
 export const style = {
   position: "absolute",
@@ -24,16 +25,15 @@ export const style = {
 
 interface HomeProps {
   curFilms: ifilm[];
-  onDelete: (id: number) => void;
-  onEdit: (film: ifilm) => void;
 }
 
-function Films({ curFilms, onDelete, onEdit }: HomeProps) {
+function Films({ curFilms }: HomeProps) {
   const [open, setOpen] = React.useState(false);
   const [edit, setEdit] = React.useState(false);
   const [editFilm, setEditFilm] = React.useState<ifilm>(emptyF);
   const [description, setDescription] = React.useState("");
   const user = useSelector((e: RootState) => e.user.user);
+  const dispatch = useDispatch();
 
   function handleOpen(d: string) {
     setOpen(true);
@@ -41,6 +41,14 @@ function Films({ curFilms, onDelete, onEdit }: HomeProps) {
   }
   const handleClose = () => setOpen(false);
   const handleCloseEdit = () => setEdit(false);
+
+  const handleDelete = (id: number) => {
+    dispatch(deleteFilmThunk(id));
+  };
+
+  const handleEditFilm = (film: ifilm) => {
+    dispatch(editFilmThunk(film));
+  };
 
   return (
     <>
@@ -66,7 +74,7 @@ function Films({ curFilms, onDelete, onEdit }: HomeProps) {
                   size="medium"
                   color="error"
                   startIcon={<DeleteIcon />}
-                  onClick={() => onDelete(e.id)}
+                  onClick={() => handleDelete(e.id)}
                 >
                   Delete
                 </Button>
@@ -77,7 +85,7 @@ function Films({ curFilms, onDelete, onEdit }: HomeProps) {
       </Grid>
       <Modal keepMounted open={edit} onClose={handleCloseEdit}>
         <Box sx={style}>
-          <EditFilm onNew={onEdit} initVal={editFilm} />
+          <EditFilm onNewEdit={handleEditFilm} initVal={editFilm} />
         </Box>
       </Modal>
       <Modal keepMounted open={open} onClose={handleClose}>
